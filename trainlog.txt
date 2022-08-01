@@ -1,0 +1,905 @@
+
+Training:Epoch[001/300] Iteration[010/087] Loss: 5.9691 ConLoss: 2.3929 Dice: 0.0387 Time: 12.88s
+
+Training:Epoch[001/300] Iteration[020/087] Loss: 5.4157 ConLoss: 2.1645 Dice: 0.2258 Time: 12.60s
+
+Training:Epoch[001/300] Iteration[030/087] Loss: 5.2115 ConLoss: 2.0590 Dice: 0.2986 Time: 12.60s
+
+Training:Epoch[001/300] Iteration[040/087] Loss: 5.1845 ConLoss: 2.1142 Dice: 0.4106 Time: 12.57s
+
+Training:Epoch[001/300] Iteration[050/087] Loss: 4.8483 ConLoss: 2.0346 Dice: 0.5050 Time: 12.54s
+
+Training:Epoch[001/300] Iteration[060/087] Loss: 4.7494 ConLoss: 1.9916 Dice: 0.4775 Time: 12.60s
+
+Training:Epoch[001/300] Iteration[070/087] Loss: 4.7778 ConLoss: 1.9915 Dice: 0.3876 Time: 12.58s
+
+Training:Epoch[001/300] Iteration[080/087] Loss: 4.6341 ConLoss: 2.0077 Dice: 0.4490 Time: 12.59s
+Saving best model
+Valid:	 Epoch[001/300] Loss: 2.8708 Dice: 0.5295 Time: 56.03s
+
+Training:Epoch[002/300] Iteration[010/087] Loss: 4.4402 ConLoss: 1.9206 Dice: 0.4565 Time: 14.89s
+
+Training:Epoch[002/300] Iteration[020/087] Loss: 4.3138 ConLoss: 1.9030 Dice: 0.4968 Time: 12.57s
+
+Training:Epoch[002/300] Iteration[030/087] Loss: 4.2393 ConLoss: 1.9191 Dice: 0.4923 Time: 12.63s
+
+Training:Epoch[002/300] Iteration[040/087] Loss: 4.1085 ConLoss: 1.9343 Dice: 0.5291 Time: 12.51s
+
+Training:Epoch[002/300] Iteration[050/087] Loss: 3.9062 ConLoss: 1.8863 Dice: 0.5995 Time: 12.53s
+
+Training:Epoch[002/300] Iteration[060/087] Loss: 4.0191 ConLoss: 1.8803 Dice: 0.4534 Time: 12.49s
+
+Training:Epoch[002/300] Iteration[070/087] Loss: 3.9406 ConLoss: 1.9567 Dice: 0.5316 Time: 12.51s
+
+Training:Epoch[002/300] Iteration[080/087] Loss: 3.9222 ConLoss: 1.8623 Dice: 0.4777 Time: 12.65s
+Saving best model
+Valid:	 Epoch[002/300] Loss: 2.4169 Dice: 0.6088 Time: 55.75s
+
+Training:Epoch[003/300] Iteration[010/087] Loss: 3.6731 ConLoss: 1.8673 Dice: 0.6053 Time: 14.86s
+
+Training:Epoch[003/300] Iteration[020/087] Loss: 3.6070 ConLoss: 1.9118 Dice: 0.5594 Time: 12.61s
+
+Training:Epoch[003/300] Iteration[030/087] Loss: 3.3985 ConLoss: 1.8139 Dice: 0.5392 Time: 12.57s
+
+Training:Epoch[003/300] Iteration[040/087] Loss: 3.5165 ConLoss: 1.9450 Dice: 0.5308 Time: 12.57s
+
+Training:Epoch[003/300] Iteration[050/087] Loss: 3.4868 ConLoss: 1.9015 Dice: 0.5404 Time: 12.48s
+
+Training:Epoch[003/300] Iteration[060/087] Loss: 3.3759 ConLoss: 1.8675 Dice: 0.4871 Time: 12.54s
+
+Training:Epoch[003/300] Iteration[070/087] Loss: 3.3757 ConLoss: 1.9191 Dice: 0.4908 Time: 12.79s
+
+Training:Epoch[003/300] Iteration[080/087] Loss: 2.9684 ConLoss: 1.7949 Dice: 0.6755 Time: 12.81s
+Saving best model
+Valid:	 Epoch[003/300] Loss: 2.1005 Dice: 0.6423 Time: 56.26s
+
+Training:Epoch[004/300] Iteration[010/087] Loss: 3.0298 ConLoss: 1.8095 Dice: 0.5714 Time: 14.91s
+
+Training:Epoch[004/300] Iteration[020/087] Loss: 2.9120 ConLoss: 1.8099 Dice: 0.5603 Time: 12.58s
+
+Training:Epoch[004/300] Iteration[030/087] Loss: 2.9222 ConLoss: 1.8051 Dice: 0.5279 Time: 12.64s
+
+Training:Epoch[004/300] Iteration[040/087] Loss: 2.9290 ConLoss: 1.8103 Dice: 0.5198 Time: 12.59s
+
+Training:Epoch[004/300] Iteration[050/087] Loss: 2.9771 ConLoss: 1.8297 Dice: 0.5196 Time: 12.56s
+
+Training:Epoch[004/300] Iteration[060/087] Loss: 2.9739 ConLoss: 1.8595 Dice: 0.4656 Time: 12.59s
+
+Training:Epoch[004/300] Iteration[070/087] Loss: 2.7956 ConLoss: 1.7674 Dice: 0.5727 Time: 12.61s
+
+Training:Epoch[004/300] Iteration[080/087] Loss: 2.8952 ConLoss: 1.8101 Dice: 0.5022 Time: 12.70s
+Saving best model
+Valid:	 Epoch[004/300] Loss: 1.9319 Dice: 0.6338 Time: 56.29s
+
+Training:Epoch[005/300] Iteration[010/087] Loss: 2.8051 ConLoss: 1.8173 Dice: 0.5146 Time: 14.84s
+
+Training:Epoch[005/300] Iteration[020/087] Loss: 2.8106 ConLoss: 1.7973 Dice: 0.5216 Time: 12.61s
+
+Training:Epoch[005/300] Iteration[030/087] Loss: 2.6972 ConLoss: 1.8506 Dice: 0.5665 Time: 12.65s
+
+Training:Epoch[005/300] Iteration[040/087] Loss: 2.7939 ConLoss: 1.8234 Dice: 0.5068 Time: 12.65s
+
+Training:Epoch[005/300] Iteration[050/087] Loss: 2.7776 ConLoss: 1.7926 Dice: 0.5492 Time: 12.56s
+
+Training:Epoch[005/300] Iteration[060/087] Loss: 2.7626 ConLoss: 1.7985 Dice: 0.5943 Time: 12.71s
+
+Training:Epoch[005/300] Iteration[070/087] Loss: 2.5786 ConLoss: 1.7804 Dice: 0.5156 Time: 12.69s
+
+Training:Epoch[005/300] Iteration[080/087] Loss: 2.6818 ConLoss: 1.8493 Dice: 0.5533 Time: 12.70s
+Saving best model
+Valid:	 Epoch[005/300] Loss: 1.8432 Dice: 0.6390 Time: 56.29s
+
+Training:Epoch[006/300] Iteration[010/087] Loss: 2.5601 ConLoss: 1.7958 Dice: 0.5713 Time: 14.55s
+
+Training:Epoch[006/300] Iteration[020/087] Loss: 2.4403 ConLoss: 1.7547 Dice: 0.6072 Time: 12.62s
+
+Training:Epoch[006/300] Iteration[030/087] Loss: 2.5573 ConLoss: 1.8057 Dice: 0.5542 Time: 12.60s
+
+Training:Epoch[006/300] Iteration[040/087] Loss: 2.4003 ConLoss: 1.7032 Dice: 0.5770 Time: 12.62s
+
+Training:Epoch[006/300] Iteration[050/087] Loss: 2.5287 ConLoss: 1.7288 Dice: 0.5005 Time: 12.55s
+
+Training:Epoch[006/300] Iteration[060/087] Loss: 2.6253 ConLoss: 1.8252 Dice: 0.5780 Time: 12.55s
+
+Training:Epoch[006/300] Iteration[070/087] Loss: 2.4401 ConLoss: 1.7640 Dice: 0.5899 Time: 12.71s
+
+Training:Epoch[006/300] Iteration[080/087] Loss: 2.6400 ConLoss: 1.7538 Dice: 0.5631 Time: 12.86s
+Saving best model
+Valid:	 Epoch[006/300] Loss: 1.7307 Dice: 0.7042 Time: 55.82s
+
+Training:Epoch[007/300] Iteration[010/087] Loss: 2.4076 ConLoss: 1.7212 Dice: 0.5381 Time: 14.88s
+
+Training:Epoch[007/300] Iteration[020/087] Loss: 2.6737 ConLoss: 1.8542 Dice: 0.5637 Time: 12.60s
+
+Training:Epoch[007/300] Iteration[030/087] Loss: 2.5976 ConLoss: 1.8230 Dice: 0.6414 Time: 12.60s
+
+Training:Epoch[007/300] Iteration[040/087] Loss: 2.5016 ConLoss: 1.7748 Dice: 0.5500 Time: 12.51s
+
+Training:Epoch[007/300] Iteration[050/087] Loss: 2.3369 ConLoss: 1.7559 Dice: 0.6085 Time: 12.59s
+
+Training:Epoch[007/300] Iteration[060/087] Loss: 2.4889 ConLoss: 1.7281 Dice: 0.5006 Time: 12.63s
+
+Training:Epoch[007/300] Iteration[070/087] Loss: 2.4871 ConLoss: 1.7813 Dice: 0.6224 Time: 12.59s
+
+Training:Epoch[007/300] Iteration[080/087] Loss: 2.3816 ConLoss: 1.7515 Dice: 0.5887 Time: 12.72s
+Saving best model
+Valid:	 Epoch[007/300] Loss: 1.7198 Dice: 0.6992 Time: 55.93s
+
+Training:Epoch[008/300] Iteration[010/087] Loss: 2.2852 ConLoss: 1.7266 Dice: 0.6397 Time: 14.94s
+
+Training:Epoch[008/300] Iteration[020/087] Loss: 2.3931 ConLoss: 1.7622 Dice: 0.5558 Time: 12.62s
+
+Training:Epoch[008/300] Iteration[030/087] Loss: 2.3833 ConLoss: 1.7321 Dice: 0.5942 Time: 12.63s
+
+Training:Epoch[008/300] Iteration[040/087] Loss: 2.4845 ConLoss: 1.7523 Dice: 0.5590 Time: 12.53s
+
+Training:Epoch[008/300] Iteration[050/087] Loss: 2.3001 ConLoss: 1.7483 Dice: 0.6162 Time: 12.54s
+
+Training:Epoch[008/300] Iteration[060/087] Loss: 2.5228 ConLoss: 1.8140 Dice: 0.5320 Time: 12.57s
+
+Training:Epoch[008/300] Iteration[070/087] Loss: 2.5737 ConLoss: 1.7779 Dice: 0.5532 Time: 12.61s
+
+Training:Epoch[008/300] Iteration[080/087] Loss: 2.3277 ConLoss: 1.7509 Dice: 0.5682 Time: 12.74s
+Saving best model
+Valid:	 Epoch[008/300] Loss: 1.6820 Dice: 0.7070 Time: 56.01s
+
+Training:Epoch[009/300] Iteration[010/087] Loss: 2.5697 ConLoss: 1.7915 Dice: 0.5310 Time: 14.91s
+
+Training:Epoch[009/300] Iteration[020/087] Loss: 2.3356 ConLoss: 1.7460 Dice: 0.5230 Time: 12.53s
+
+Training:Epoch[009/300] Iteration[030/087] Loss: 2.4209 ConLoss: 1.7381 Dice: 0.4498 Time: 12.64s
+
+Training:Epoch[009/300] Iteration[040/087] Loss: 2.4075 ConLoss: 1.7512 Dice: 0.5868 Time: 12.61s
+
+Training:Epoch[009/300] Iteration[050/087] Loss: 2.3036 ConLoss: 1.6997 Dice: 0.5726 Time: 12.73s
+
+Training:Epoch[009/300] Iteration[060/087] Loss: 2.3296 ConLoss: 1.7262 Dice: 0.5655 Time: 12.70s
+
+Training:Epoch[009/300] Iteration[070/087] Loss: 2.3656 ConLoss: 1.7411 Dice: 0.5821 Time: 12.58s
+
+Training:Epoch[009/300] Iteration[080/087] Loss: 2.4229 ConLoss: 1.7451 Dice: 0.5582 Time: 12.53s
+Saving best model
+Valid:	 Epoch[009/300] Loss: 1.6364 Dice: 0.7236 Time: 55.91s
+
+Training:Epoch[010/300] Iteration[010/087] Loss: 2.2073 ConLoss: 1.7081 Dice: 0.6365 Time: 15.01s
+
+Training:Epoch[010/300] Iteration[020/087] Loss: 2.5183 ConLoss: 1.8238 Dice: 0.6055 Time: 12.53s
+
+Training:Epoch[010/300] Iteration[030/087] Loss: 2.3752 ConLoss: 1.7116 Dice: 0.5050 Time: 12.53s
+
+Training:Epoch[010/300] Iteration[040/087] Loss: 2.3199 ConLoss: 1.7124 Dice: 0.5558 Time: 12.59s
+
+Training:Epoch[010/300] Iteration[050/087] Loss: 2.3456 ConLoss: 1.7386 Dice: 0.6033 Time: 12.58s
+
+Training:Epoch[010/300] Iteration[060/087] Loss: 2.4685 ConLoss: 1.7504 Dice: 0.6093 Time: 12.63s
+
+Training:Epoch[010/300] Iteration[070/087] Loss: 2.3110 ConLoss: 1.7345 Dice: 0.5852 Time: 12.54s
+
+Training:Epoch[010/300] Iteration[080/087] Loss: 2.1865 ConLoss: 1.7013 Dice: 0.5688 Time: 12.63s
+Valid:	 Epoch[010/300] Loss: 1.6812 Dice: 0.7161 Time: 56.11s
+
+Training:Epoch[011/300] Iteration[010/087] Loss: 2.2004 ConLoss: 1.6952 Dice: 0.5905 Time: 12.73s
+
+Training:Epoch[011/300] Iteration[020/087] Loss: 2.2961 ConLoss: 1.7159 Dice: 0.5967 Time: 12.63s
+
+Training:Epoch[011/300] Iteration[030/087] Loss: 2.3006 ConLoss: 1.7251 Dice: 0.5075 Time: 12.60s
+
+Training:Epoch[011/300] Iteration[040/087] Loss: 2.3918 ConLoss: 1.7363 Dice: 0.5509 Time: 12.70s
+
+Training:Epoch[011/300] Iteration[050/087] Loss: 2.1730 ConLoss: 1.6807 Dice: 0.6219 Time: 12.58s
+
+Training:Epoch[011/300] Iteration[060/087] Loss: 2.3453 ConLoss: 1.7382 Dice: 0.5864 Time: 12.66s
+
+Training:Epoch[011/300] Iteration[070/087] Loss: 2.3730 ConLoss: 1.7585 Dice: 0.5876 Time: 12.69s
+
+Training:Epoch[011/300] Iteration[080/087] Loss: 2.2436 ConLoss: 1.6914 Dice: 0.6160 Time: 12.79s
+Saving best model
+Valid:	 Epoch[011/300] Loss: 1.6072 Dice: 0.7351 Time: 55.57s
+
+Training:Epoch[012/300] Iteration[010/087] Loss: 2.2876 ConLoss: 1.7080 Dice: 0.5648 Time: 25.43s
+
+Training:Epoch[012/300] Iteration[020/087] Loss: 2.3769 ConLoss: 1.7271 Dice: 0.6543 Time: 12.55s
+
+Training:Epoch[012/300] Iteration[030/087] Loss: 2.2566 ConLoss: 1.7110 Dice: 0.6015 Time: 12.51s
+
+Training:Epoch[012/300] Iteration[040/087] Loss: 2.2469 ConLoss: 1.7223 Dice: 0.5683 Time: 12.61s
+
+Training:Epoch[012/300] Iteration[050/087] Loss: 2.2882 ConLoss: 1.6864 Dice: 0.5714 Time: 12.63s
+
+Training:Epoch[012/300] Iteration[060/087] Loss: 2.2440 ConLoss: 1.7089 Dice: 0.6061 Time: 12.66s
+
+Training:Epoch[012/300] Iteration[070/087] Loss: 2.3056 ConLoss: 1.6959 Dice: 0.5880 Time: 12.61s
+
+Training:Epoch[012/300] Iteration[080/087] Loss: 2.2833 ConLoss: 1.7293 Dice: 0.5812 Time: 12.54s
+Saving best model
+Valid:	 Epoch[012/300] Loss: 1.6051 Dice: 0.7392 Time: 55.75s
+
+Training:Epoch[013/300] Iteration[010/087] Loss: 2.4022 ConLoss: 1.7398 Dice: 0.6164 Time: 14.97s
+
+Training:Epoch[013/300] Iteration[020/087] Loss: 2.2237 ConLoss: 1.6940 Dice: 0.5885 Time: 12.61s
+
+Training:Epoch[013/300] Iteration[030/087] Loss: 2.1384 ConLoss: 1.6816 Dice: 0.5880 Time: 12.54s
+
+Training:Epoch[013/300] Iteration[040/087] Loss: 2.1915 ConLoss: 1.6744 Dice: 0.5738 Time: 12.60s
+
+Training:Epoch[013/300] Iteration[050/087] Loss: 2.4347 ConLoss: 1.7313 Dice: 0.5117 Time: 12.61s
+
+Training:Epoch[013/300] Iteration[060/087] Loss: 2.2650 ConLoss: 1.7341 Dice: 0.5816 Time: 12.71s
+
+Training:Epoch[013/300] Iteration[070/087] Loss: 2.1511 ConLoss: 1.7020 Dice: 0.6606 Time: 12.68s
+
+Training:Epoch[013/300] Iteration[080/087] Loss: 2.2338 ConLoss: 1.6893 Dice: 0.6134 Time: 12.50s
+Saving best model
+Valid:	 Epoch[013/300] Loss: 1.6006 Dice: 0.7334 Time: 55.93s
+
+Training:Epoch[014/300] Iteration[010/087] Loss: 2.2590 ConLoss: 1.7240 Dice: 0.5929 Time: 14.93s
+
+Training:Epoch[014/300] Iteration[020/087] Loss: 2.2343 ConLoss: 1.6889 Dice: 0.6159 Time: 12.59s
+
+Training:Epoch[014/300] Iteration[030/087] Loss: 2.2241 ConLoss: 1.6845 Dice: 0.5988 Time: 12.54s
+
+Training:Epoch[014/300] Iteration[040/087] Loss: 2.1800 ConLoss: 1.7195 Dice: 0.5996 Time: 12.64s
+
+Training:Epoch[014/300] Iteration[050/087] Loss: 2.2765 ConLoss: 1.7031 Dice: 0.5428 Time: 12.52s
+
+Training:Epoch[014/300] Iteration[060/087] Loss: 2.3393 ConLoss: 1.7159 Dice: 0.5312 Time: 12.64s
+
+Training:Epoch[014/300] Iteration[070/087] Loss: 2.3221 ConLoss: 1.7110 Dice: 0.5633 Time: 12.74s
+
+Training:Epoch[014/300] Iteration[080/087] Loss: 2.3165 ConLoss: 1.6776 Dice: 0.5371 Time: 12.64s
+Saving best model
+Valid:	 Epoch[014/300] Loss: 1.5908 Dice: 0.7357 Time: 56.31s
+
+Training:Epoch[015/300] Iteration[010/087] Loss: 2.3282 ConLoss: 1.7040 Dice: 0.5582 Time: 15.04s
+
+Training:Epoch[015/300] Iteration[020/087] Loss: 2.2814 ConLoss: 1.7549 Dice: 0.5860 Time: 12.54s
+
+Training:Epoch[015/300] Iteration[030/087] Loss: 2.2782 ConLoss: 1.7564 Dice: 0.6174 Time: 12.59s
+
+Training:Epoch[015/300] Iteration[040/087] Loss: 2.2974 ConLoss: 1.7076 Dice: 0.5783 Time: 12.61s
+
+Training:Epoch[015/300] Iteration[050/087] Loss: 2.2706 ConLoss: 1.6973 Dice: 0.5636 Time: 12.65s
+
+Training:Epoch[015/300] Iteration[060/087] Loss: 2.2147 ConLoss: 1.6961 Dice: 0.5757 Time: 12.68s
+
+Training:Epoch[015/300] Iteration[070/087] Loss: 2.1869 ConLoss: 1.6845 Dice: 0.5354 Time: 12.60s
+
+Training:Epoch[015/300] Iteration[080/087] Loss: 2.1583 ConLoss: 1.6713 Dice: 0.5715 Time: 12.55s
+Valid:	 Epoch[015/300] Loss: 1.5950 Dice: 0.7089 Time: 55.52s
+
+Training:Epoch[016/300] Iteration[010/087] Loss: 2.3382 ConLoss: 1.7939 Dice: 0.5483 Time: 12.66s
+
+Training:Epoch[016/300] Iteration[020/087] Loss: 2.1832 ConLoss: 1.7078 Dice: 0.5814 Time: 12.58s
+
+Training:Epoch[016/300] Iteration[030/087] Loss: 2.2322 ConLoss: 1.7260 Dice: 0.5626 Time: 12.58s
+
+Training:Epoch[016/300] Iteration[040/087] Loss: 2.2196 ConLoss: 1.6799 Dice: 0.5849 Time: 12.64s
+
+Training:Epoch[016/300] Iteration[050/087] Loss: 2.1718 ConLoss: 1.6905 Dice: 0.6439 Time: 12.56s
+
+Training:Epoch[016/300] Iteration[060/087] Loss: 2.2832 ConLoss: 1.7059 Dice: 0.5999 Time: 12.62s
+
+Training:Epoch[016/300] Iteration[070/087] Loss: 2.2905 ConLoss: 1.6956 Dice: 0.5367 Time: 12.80s
+
+Training:Epoch[016/300] Iteration[080/087] Loss: 2.1474 ConLoss: 1.6923 Dice: 0.6186 Time: 12.66s
+Valid:	 Epoch[016/300] Loss: 1.5930 Dice: 0.7243 Time: 55.81s
+
+Training:Epoch[017/300] Iteration[010/087] Loss: 2.1545 ConLoss: 1.6858 Dice: 0.5926 Time: 12.72s
+
+Training:Epoch[017/300] Iteration[020/087] Loss: 2.1958 ConLoss: 1.7188 Dice: 0.6403 Time: 12.60s
+
+Training:Epoch[017/300] Iteration[030/087] Loss: 2.3146 ConLoss: 1.6764 Dice: 0.6345 Time: 12.57s
+
+Training:Epoch[017/300] Iteration[040/087] Loss: 2.1987 ConLoss: 1.6668 Dice: 0.5971 Time: 12.67s
+
+Training:Epoch[017/300] Iteration[050/087] Loss: 2.2048 ConLoss: 1.6898 Dice: 0.6128 Time: 12.49s
+
+Training:Epoch[017/300] Iteration[060/087] Loss: 2.1064 ConLoss: 1.6549 Dice: 0.7170 Time: 12.70s
+
+Training:Epoch[017/300] Iteration[070/087] Loss: 2.0625 ConLoss: 1.6452 Dice: 0.6291 Time: 12.69s
+
+Training:Epoch[017/300] Iteration[080/087] Loss: 2.2146 ConLoss: 1.7100 Dice: 0.5489 Time: 12.77s
+Saving best model
+Valid:	 Epoch[017/300] Loss: 1.5584 Dice: 0.7389 Time: 55.96s
+
+Training:Epoch[018/300] Iteration[010/087] Loss: 2.1655 ConLoss: 1.6639 Dice: 0.6235 Time: 25.34s
+
+Training:Epoch[018/300] Iteration[020/087] Loss: 2.1707 ConLoss: 1.6561 Dice: 0.5960 Time: 12.49s
+
+Training:Epoch[018/300] Iteration[030/087] Loss: 2.2456 ConLoss: 1.6759 Dice: 0.5924 Time: 12.61s
+
+Training:Epoch[018/300] Iteration[040/087] Loss: 2.1040 ConLoss: 1.6599 Dice: 0.5731 Time: 12.54s
+
+Training:Epoch[018/300] Iteration[050/087] Loss: 2.2054 ConLoss: 1.6763 Dice: 0.5402 Time: 12.58s
+
+Training:Epoch[018/300] Iteration[060/087] Loss: 2.2079 ConLoss: 1.6985 Dice: 0.5640 Time: 12.54s
+
+Training:Epoch[018/300] Iteration[070/087] Loss: 2.3868 ConLoss: 1.7356 Dice: 0.5531 Time: 12.74s
+
+Training:Epoch[018/300] Iteration[080/087] Loss: 2.1169 ConLoss: 1.6658 Dice: 0.6432 Time: 12.76s
+Saving best model
+Valid:	 Epoch[018/300] Loss: 1.5575 Dice: 0.7508 Time: 55.56s
+
+Training:Epoch[019/300] Iteration[010/087] Loss: 2.0934 ConLoss: 1.6591 Dice: 0.5554 Time: 14.94s
+
+Training:Epoch[019/300] Iteration[020/087] Loss: 2.1430 ConLoss: 1.6525 Dice: 0.6391 Time: 12.64s
+
+Training:Epoch[019/300] Iteration[030/087] Loss: 2.2332 ConLoss: 1.6931 Dice: 0.5974 Time: 12.61s
+
+Training:Epoch[019/300] Iteration[040/087] Loss: 2.1849 ConLoss: 1.7037 Dice: 0.6975 Time: 12.64s
+
+Training:Epoch[019/300] Iteration[050/087] Loss: 2.2220 ConLoss: 1.7036 Dice: 0.6011 Time: 12.62s
+
+Training:Epoch[019/300] Iteration[060/087] Loss: 2.2445 ConLoss: 1.6981 Dice: 0.5614 Time: 12.56s
+
+Training:Epoch[019/300] Iteration[070/087] Loss: 2.1318 ConLoss: 1.6645 Dice: 0.5267 Time: 12.63s
+
+Training:Epoch[019/300] Iteration[080/087] Loss: 2.2177 ConLoss: 1.7102 Dice: 0.5139 Time: 12.67s
+Valid:	 Epoch[019/300] Loss: 1.5629 Dice: 0.7347 Time: 56.10s
+
+Training:Epoch[020/300] Iteration[010/087] Loss: 2.2731 ConLoss: 1.7342 Dice: 0.6204 Time: 12.73s
+
+Training:Epoch[020/300] Iteration[020/087] Loss: 2.1307 ConLoss: 1.6778 Dice: 0.5510 Time: 12.63s
+
+Training:Epoch[020/300] Iteration[030/087] Loss: 2.2641 ConLoss: 1.6910 Dice: 0.5702 Time: 12.59s
+
+Training:Epoch[020/300] Iteration[040/087] Loss: 2.0891 ConLoss: 1.6496 Dice: 0.5723 Time: 12.57s
+
+Training:Epoch[020/300] Iteration[050/087] Loss: 2.2075 ConLoss: 1.6855 Dice: 0.6393 Time: 12.74s
+
+Training:Epoch[020/300] Iteration[060/087] Loss: 2.2928 ConLoss: 1.6732 Dice: 0.5533 Time: 12.68s
+
+Training:Epoch[020/300] Iteration[070/087] Loss: 2.1134 ConLoss: 1.6749 Dice: 0.6067 Time: 12.54s
+
+Training:Epoch[020/300] Iteration[080/087] Loss: 2.1275 ConLoss: 1.6702 Dice: 0.6131 Time: 12.67s
+Valid:	 Epoch[020/300] Loss: 1.5860 Dice: 0.7366 Time: 56.30s
+
+Training:Epoch[021/300] Iteration[010/087] Loss: 2.1327 ConLoss: 1.6995 Dice: 0.5810 Time: 12.72s
+
+Training:Epoch[021/300] Iteration[020/087] Loss: 2.2814 ConLoss: 1.6722 Dice: 0.6124 Time: 12.64s
+
+Training:Epoch[021/300] Iteration[030/087] Loss: 2.2346 ConLoss: 1.6967 Dice: 0.5452 Time: 12.64s
+
+Training:Epoch[021/300] Iteration[040/087] Loss: 2.0956 ConLoss: 1.6807 Dice: 0.5795 Time: 12.52s
+
+Training:Epoch[021/300] Iteration[050/087] Loss: 2.1965 ConLoss: 1.6952 Dice: 0.5621 Time: 12.61s
+
+Training:Epoch[021/300] Iteration[060/087] Loss: 2.1708 ConLoss: 1.6813 Dice: 0.6200 Time: 12.63s
+
+Training:Epoch[021/300] Iteration[070/087] Loss: 2.1251 ConLoss: 1.6527 Dice: 0.6156 Time: 12.58s
+
+Training:Epoch[021/300] Iteration[080/087] Loss: 2.0805 ConLoss: 1.6683 Dice: 0.6266 Time: 12.75s
+Saving best model
+Valid:	 Epoch[021/300] Loss: 1.5458 Dice: 0.7374 Time: 55.87s
+
+Training:Epoch[022/300] Iteration[010/087] Loss: 2.1420 ConLoss: 1.6734 Dice: 0.6124 Time: 25.27s
+
+Training:Epoch[022/300] Iteration[020/087] Loss: 2.1086 ConLoss: 1.6367 Dice: 0.6462 Time: 12.57s
+
+Training:Epoch[022/300] Iteration[030/087] Loss: 2.0341 ConLoss: 1.6400 Dice: 0.6122 Time: 12.54s
+
+Training:Epoch[022/300] Iteration[040/087] Loss: 2.2071 ConLoss: 1.6788 Dice: 0.5737 Time: 12.61s
+
+Training:Epoch[022/300] Iteration[050/087] Loss: 2.2104 ConLoss: 1.6860 Dice: 0.6052 Time: 12.61s
+
+Training:Epoch[022/300] Iteration[060/087] Loss: 2.0874 ConLoss: 1.6718 Dice: 0.6717 Time: 12.72s
+
+Training:Epoch[022/300] Iteration[070/087] Loss: 2.1414 ConLoss: 1.6816 Dice: 0.5588 Time: 12.63s
+
+Training:Epoch[022/300] Iteration[080/087] Loss: 2.0910 ConLoss: 1.6459 Dice: 0.6495 Time: 12.74s
+Valid:	 Epoch[022/300] Loss: 1.5672 Dice: 0.7482 Time: 56.23s
+
+Training:Epoch[023/300] Iteration[010/087] Loss: 2.1369 ConLoss: 1.6802 Dice: 0.5879 Time: 12.65s
+
+Training:Epoch[023/300] Iteration[020/087] Loss: 2.2409 ConLoss: 1.6929 Dice: 0.4740 Time: 12.63s
+
+Training:Epoch[023/300] Iteration[030/087] Loss: 2.1166 ConLoss: 1.6825 Dice: 0.6396 Time: 12.56s
+
+Training:Epoch[023/300] Iteration[040/087] Loss: 2.1499 ConLoss: 1.6831 Dice: 0.6195 Time: 12.66s
+
+Training:Epoch[023/300] Iteration[050/087] Loss: 2.2514 ConLoss: 1.6972 Dice: 0.5223 Time: 12.76s
+
+Training:Epoch[023/300] Iteration[060/087] Loss: 2.0664 ConLoss: 1.6151 Dice: 0.6085 Time: 12.65s
+
+Training:Epoch[023/300] Iteration[070/087] Loss: 2.1707 ConLoss: 1.6773 Dice: 0.6076 Time: 12.79s
+
+Training:Epoch[023/300] Iteration[080/087] Loss: 2.1145 ConLoss: 1.6324 Dice: 0.5560 Time: 12.72s
+Valid:	 Epoch[023/300] Loss: 1.5656 Dice: 0.7402 Time: 55.79s
+
+Training:Epoch[024/300] Iteration[010/087] Loss: 2.1351 ConLoss: 1.6946 Dice: 0.5976 Time: 12.69s
+
+Training:Epoch[024/300] Iteration[020/087] Loss: 2.1187 ConLoss: 1.6949 Dice: 0.5365 Time: 12.66s
+
+Training:Epoch[024/300] Iteration[030/087] Loss: 2.1432 ConLoss: 1.6897 Dice: 0.5565 Time: 12.62s
+
+Training:Epoch[024/300] Iteration[040/087] Loss: 2.1560 ConLoss: 1.6398 Dice: 0.6150 Time: 12.70s
+
+Training:Epoch[024/300] Iteration[050/087] Loss: 2.0932 ConLoss: 1.6313 Dice: 0.5745 Time: 12.60s
+
+Training:Epoch[024/300] Iteration[060/087] Loss: 2.0935 ConLoss: 1.6550 Dice: 0.5678 Time: 12.71s
+
+Training:Epoch[024/300] Iteration[070/087] Loss: 2.0596 ConLoss: 1.6063 Dice: 0.5788 Time: 12.65s
+
+Training:Epoch[024/300] Iteration[080/087] Loss: 2.0989 ConLoss: 1.6513 Dice: 0.6204 Time: 12.76s
+Valid:	 Epoch[024/300] Loss: 1.5690 Dice: 0.7588 Time: 56.15s
+
+Training:Epoch[025/300] Iteration[010/087] Loss: 2.0739 ConLoss: 1.6507 Dice: 0.6073 Time: 12.76s
+
+Training:Epoch[025/300] Iteration[020/087] Loss: 2.1495 ConLoss: 1.6608 Dice: 0.5572 Time: 12.64s
+
+Training:Epoch[025/300] Iteration[030/087] Loss: 2.1501 ConLoss: 1.6646 Dice: 0.6550 Time: 12.66s
+
+Training:Epoch[025/300] Iteration[040/087] Loss: 2.1369 ConLoss: 1.6831 Dice: 0.5930 Time: 12.56s
+
+Training:Epoch[025/300] Iteration[050/087] Loss: 2.0961 ConLoss: 1.6597 Dice: 0.6227 Time: 12.67s
+
+Training:Epoch[025/300] Iteration[060/087] Loss: 2.1720 ConLoss: 1.6603 Dice: 0.6404 Time: 12.77s
+
+Training:Epoch[025/300] Iteration[070/087] Loss: 2.1843 ConLoss: 1.6801 Dice: 0.5875 Time: 12.73s
+
+Training:Epoch[025/300] Iteration[080/087] Loss: 2.0601 ConLoss: 1.6439 Dice: 0.6229 Time: 12.61s
+Valid:	 Epoch[025/300] Loss: 1.6048 Dice: 0.7430 Time: 55.97s
+
+Training:Epoch[026/300] Iteration[010/087] Loss: 2.1056 ConLoss: 1.6549 Dice: 0.5726 Time: 12.72s
+
+Training:Epoch[026/300] Iteration[020/087] Loss: 2.1187 ConLoss: 1.6550 Dice: 0.6108 Time: 12.65s
+
+Training:Epoch[026/300] Iteration[030/087] Loss: 2.0813 ConLoss: 1.6573 Dice: 0.6024 Time: 12.62s
+
+Training:Epoch[026/300] Iteration[040/087] Loss: 2.0500 ConLoss: 1.6630 Dice: 0.6269 Time: 12.68s
+
+Training:Epoch[026/300] Iteration[050/087] Loss: 2.1963 ConLoss: 1.7064 Dice: 0.6497 Time: 12.65s
+
+Training:Epoch[026/300] Iteration[060/087] Loss: 2.0219 ConLoss: 1.6413 Dice: 0.6541 Time: 12.83s
+
+Training:Epoch[026/300] Iteration[070/087] Loss: 2.1791 ConLoss: 1.6802 Dice: 0.7036 Time: 12.83s
+
+Training:Epoch[026/300] Iteration[080/087] Loss: 2.0439 ConLoss: 1.6492 Dice: 0.6102 Time: 12.71s
+Valid:	 Epoch[026/300] Loss: 1.5667 Dice: 0.7590 Time: 56.04s
+
+Training:Epoch[027/300] Iteration[010/087] Loss: 2.1638 ConLoss: 1.6433 Dice: 0.5720 Time: 12.72s
+
+Training:Epoch[027/300] Iteration[020/087] Loss: 2.0455 ConLoss: 1.6536 Dice: 0.5831 Time: 12.57s
+
+Training:Epoch[027/300] Iteration[030/087] Loss: 2.0539 ConLoss: 1.6126 Dice: 0.6188 Time: 12.66s
+
+Training:Epoch[027/300] Iteration[040/087] Loss: 2.0324 ConLoss: 1.6205 Dice: 0.6461 Time: 12.58s
+
+Training:Epoch[027/300] Iteration[050/087] Loss: 2.0246 ConLoss: 1.6127 Dice: 0.5779 Time: 12.67s
+
+Training:Epoch[027/300] Iteration[060/087] Loss: 2.0822 ConLoss: 1.6316 Dice: 0.6527 Time: 12.62s
+
+Training:Epoch[027/300] Iteration[070/087] Loss: 2.1023 ConLoss: 1.6646 Dice: 0.5520 Time: 12.62s
+
+Training:Epoch[027/300] Iteration[080/087] Loss: 2.1974 ConLoss: 1.6275 Dice: 0.5226 Time: 12.56s
+Saving best model
+Valid:	 Epoch[027/300] Loss: 1.5286 Dice: 0.7504 Time: 55.56s
+
+Training:Epoch[028/300] Iteration[010/087] Loss: 2.0635 ConLoss: 1.6259 Dice: 0.6297 Time: 14.91s
+
+Training:Epoch[028/300] Iteration[020/087] Loss: 2.1323 ConLoss: 1.6564 Dice: 0.5760 Time: 12.60s
+
+Training:Epoch[028/300] Iteration[030/087] Loss: 1.9958 ConLoss: 1.6450 Dice: 0.6169 Time: 12.62s
+
+Training:Epoch[028/300] Iteration[040/087] Loss: 2.1255 ConLoss: 1.6361 Dice: 0.5208 Time: 12.56s
+
+Training:Epoch[028/300] Iteration[050/087] Loss: 2.0906 ConLoss: 1.6472 Dice: 0.6415 Time: 12.61s
+
+Training:Epoch[028/300] Iteration[060/087] Loss: 2.1157 ConLoss: 1.6391 Dice: 0.5934 Time: 12.65s
+
+Training:Epoch[028/300] Iteration[070/087] Loss: 2.1246 ConLoss: 1.6686 Dice: 0.5900 Time: 12.71s
+
+Training:Epoch[028/300] Iteration[080/087] Loss: 2.1758 ConLoss: 1.6917 Dice: 0.5538 Time: 12.81s
+Valid:	 Epoch[028/300] Loss: 1.5407 Dice: 0.7519 Time: 56.14s
+
+Training:Epoch[029/300] Iteration[010/087] Loss: 2.1275 ConLoss: 1.6590 Dice: 0.6041 Time: 12.72s
+
+Training:Epoch[029/300] Iteration[020/087] Loss: 2.1017 ConLoss: 1.6656 Dice: 0.5761 Time: 12.63s
+
+Training:Epoch[029/300] Iteration[030/087] Loss: 2.0001 ConLoss: 1.6101 Dice: 0.6010 Time: 12.55s
+
+Training:Epoch[029/300] Iteration[040/087] Loss: 2.0808 ConLoss: 1.6231 Dice: 0.6238 Time: 12.66s
+
+Training:Epoch[029/300] Iteration[050/087] Loss: 2.1087 ConLoss: 1.6456 Dice: 0.6005 Time: 12.55s
+
+Training:Epoch[029/300] Iteration[060/087] Loss: 2.1287 ConLoss: 1.6666 Dice: 0.6774 Time: 12.49s
+
+Training:Epoch[029/300] Iteration[070/087] Loss: 2.0211 ConLoss: 1.5924 Dice: 0.6291 Time: 12.74s
+
+Training:Epoch[029/300] Iteration[080/087] Loss: 2.0587 ConLoss: 1.6404 Dice: 0.6597 Time: 12.73s
+Valid:	 Epoch[029/300] Loss: 1.5324 Dice: 0.7595 Time: 56.06s
+
+Training:Epoch[030/300] Iteration[010/087] Loss: 2.1435 ConLoss: 1.6935 Dice: 0.6589 Time: 12.67s
+
+Training:Epoch[030/300] Iteration[020/087] Loss: 2.0936 ConLoss: 1.6776 Dice: 0.6399 Time: 12.60s
+
+Training:Epoch[030/300] Iteration[030/087] Loss: 2.2217 ConLoss: 1.6903 Dice: 0.5754 Time: 12.65s
+
+Training:Epoch[030/300] Iteration[040/087] Loss: 2.0389 ConLoss: 1.6386 Dice: 0.5559 Time: 12.62s
+
+Training:Epoch[030/300] Iteration[050/087] Loss: 1.9995 ConLoss: 1.5969 Dice: 0.6672 Time: 12.55s
+
+Training:Epoch[030/300] Iteration[060/087] Loss: 2.1274 ConLoss: 1.6409 Dice: 0.4576 Time: 12.52s
+
+Training:Epoch[030/300] Iteration[070/087] Loss: 2.0579 ConLoss: 1.6474 Dice: 0.6043 Time: 12.64s
+
+Training:Epoch[030/300] Iteration[080/087] Loss: 2.0050 ConLoss: 1.6088 Dice: 0.5873 Time: 12.64s
+Valid:	 Epoch[030/300] Loss: 1.5705 Dice: 0.7537 Time: 56.08s
+
+Training:Epoch[031/300] Iteration[010/087] Loss: 2.1639 ConLoss: 1.6676 Dice: 0.6642 Time: 12.76s
+
+Training:Epoch[031/300] Iteration[020/087] Loss: 2.0348 ConLoss: 1.6157 Dice: 0.5746 Time: 12.63s
+
+Training:Epoch[031/300] Iteration[030/087] Loss: 2.0868 ConLoss: 1.6499 Dice: 0.5364 Time: 12.66s
+
+Training:Epoch[031/300] Iteration[040/087] Loss: 2.0536 ConLoss: 1.6111 Dice: 0.5977 Time: 12.63s
+
+Training:Epoch[031/300] Iteration[050/087] Loss: 2.0915 ConLoss: 1.5906 Dice: 0.6278 Time: 12.64s
+
+Training:Epoch[031/300] Iteration[060/087] Loss: 2.0659 ConLoss: 1.6407 Dice: 0.5900 Time: 12.76s
+
+Training:Epoch[031/300] Iteration[070/087] Loss: 2.1306 ConLoss: 1.6459 Dice: 0.5828 Time: 12.76s
+
+Training:Epoch[031/300] Iteration[080/087] Loss: 2.0476 ConLoss: 1.6563 Dice: 0.6821 Time: 12.76s
+Valid:	 Epoch[031/300] Loss: 1.5633 Dice: 0.7548 Time: 55.54s
+
+Training:Epoch[032/300] Iteration[010/087] Loss: 2.0104 ConLoss: 1.6089 Dice: 0.5592 Time: 12.72s
+
+Training:Epoch[032/300] Iteration[020/087] Loss: 2.1167 ConLoss: 1.6245 Dice: 0.5918 Time: 12.60s
+
+Training:Epoch[032/300] Iteration[030/087] Loss: 2.2243 ConLoss: 1.6657 Dice: 0.6343 Time: 12.68s
+
+Training:Epoch[032/300] Iteration[040/087] Loss: 2.0688 ConLoss: 1.6083 Dice: 0.6218 Time: 12.64s
+
+Training:Epoch[032/300] Iteration[050/087] Loss: 2.2175 ConLoss: 1.6913 Dice: 0.6098 Time: 12.61s
+
+Training:Epoch[032/300] Iteration[060/087] Loss: 2.0903 ConLoss: 1.6475 Dice: 0.5729 Time: 12.74s
+
+Training:Epoch[032/300] Iteration[070/087] Loss: 2.0633 ConLoss: 1.6411 Dice: 0.6455 Time: 12.81s
+
+Training:Epoch[032/300] Iteration[080/087] Loss: 2.0686 ConLoss: 1.6799 Dice: 0.5804 Time: 12.74s
+Valid:	 Epoch[032/300] Loss: 1.5709 Dice: 0.7326 Time: 56.05s
+
+Training:Epoch[033/300] Iteration[010/087] Loss: 2.0506 ConLoss: 1.6408 Dice: 0.6005 Time: 12.70s
+
+Training:Epoch[033/300] Iteration[020/087] Loss: 2.0023 ConLoss: 1.6053 Dice: 0.6520 Time: 12.63s
+
+Training:Epoch[033/300] Iteration[030/087] Loss: 2.2625 ConLoss: 1.7224 Dice: 0.6042 Time: 12.67s
+
+Training:Epoch[033/300] Iteration[040/087] Loss: 2.1401 ConLoss: 1.6848 Dice: 0.6454 Time: 12.55s
+
+Training:Epoch[033/300] Iteration[050/087] Loss: 2.0822 ConLoss: 1.6517 Dice: 0.5668 Time: 12.69s
+
+Training:Epoch[033/300] Iteration[060/087] Loss: 2.1681 ConLoss: 1.6683 Dice: 0.5943 Time: 12.64s
+
+Training:Epoch[033/300] Iteration[070/087] Loss: 2.0786 ConLoss: 1.6613 Dice: 0.6298 Time: 12.68s
+
+Training:Epoch[033/300] Iteration[080/087] Loss: 1.9512 ConLoss: 1.5955 Dice: 0.6131 Time: 12.73s
+Valid:	 Epoch[033/300] Loss: 1.5422 Dice: 0.7724 Time: 55.72s
+
+Training:Epoch[034/300] Iteration[010/087] Loss: 2.0640 ConLoss: 1.6139 Dice: 0.6553 Time: 12.71s
+
+Training:Epoch[034/300] Iteration[020/087] Loss: 2.2231 ConLoss: 1.6584 Dice: 0.5677 Time: 12.62s
+
+Training:Epoch[034/300] Iteration[030/087] Loss: 2.1243 ConLoss: 1.6343 Dice: 0.5385 Time: 12.70s
+
+Training:Epoch[034/300] Iteration[040/087] Loss: 2.0562 ConLoss: 1.6168 Dice: 0.4911 Time: 12.69s
+
+Training:Epoch[034/300] Iteration[050/087] Loss: 2.0357 ConLoss: 1.6177 Dice: 0.5796 Time: 12.71s
+
+Training:Epoch[034/300] Iteration[060/087] Loss: 2.0750 ConLoss: 1.6233 Dice: 0.5906 Time: 12.57s
+
+Training:Epoch[034/300] Iteration[070/087] Loss: 2.1231 ConLoss: 1.6842 Dice: 0.5834 Time: 12.80s
+
+Training:Epoch[034/300] Iteration[080/087] Loss: 2.0367 ConLoss: 1.6255 Dice: 0.5907 Time: 12.76s
+Saving best model
+Valid:	 Epoch[034/300] Loss: 1.5198 Dice: 0.7574 Time: 55.43s
+
+Training:Epoch[035/300] Iteration[010/087] Loss: 2.0945 ConLoss: 1.6409 Dice: 0.6709 Time: 14.81s
+
+Training:Epoch[035/300] Iteration[020/087] Loss: 2.0726 ConLoss: 1.6238 Dice: 0.6652 Time: 12.55s
+
+Training:Epoch[035/300] Iteration[030/087] Loss: 1.9708 ConLoss: 1.6045 Dice: 0.6317 Time: 12.54s
+
+Training:Epoch[035/300] Iteration[040/087] Loss: 2.0292 ConLoss: 1.6310 Dice: 0.6647 Time: 12.64s
+
+Training:Epoch[035/300] Iteration[050/087] Loss: 2.0738 ConLoss: 1.6112 Dice: 0.6731 Time: 12.73s
+
+Training:Epoch[035/300] Iteration[060/087] Loss: 1.9105 ConLoss: 1.5924 Dice: 0.5939 Time: 12.70s
+
+Training:Epoch[035/300] Iteration[070/087] Loss: 2.0778 ConLoss: 1.6350 Dice: 0.6208 Time: 12.56s
+
+Training:Epoch[035/300] Iteration[080/087] Loss: 1.9618 ConLoss: 1.6015 Dice: 0.6330 Time: 12.72s
+Saving best model
+Valid:	 Epoch[035/300] Loss: 1.5160 Dice: 0.7614 Time: 56.01s
+
+Training:Epoch[036/300] Iteration[010/087] Loss: 2.1413 ConLoss: 1.6494 Dice: 0.6003 Time: 14.98s
+
+Training:Epoch[036/300] Iteration[020/087] Loss: 2.0243 ConLoss: 1.6101 Dice: 0.6753 Time: 12.63s
+
+Training:Epoch[036/300] Iteration[030/087] Loss: 2.0677 ConLoss: 1.6463 Dice: 0.5758 Time: 12.51s
+
+Training:Epoch[036/300] Iteration[040/087] Loss: 2.1282 ConLoss: 1.6747 Dice: 0.5549 Time: 12.62s
+
+Training:Epoch[036/300] Iteration[050/087] Loss: 2.0683 ConLoss: 1.6435 Dice: 0.5669 Time: 12.72s
+
+Training:Epoch[036/300] Iteration[060/087] Loss: 2.0474 ConLoss: 1.6036 Dice: 0.6196 Time: 12.70s
+
+Training:Epoch[036/300] Iteration[070/087] Loss: 2.0692 ConLoss: 1.6032 Dice: 0.6218 Time: 12.74s
+
+Training:Epoch[036/300] Iteration[080/087] Loss: 2.0033 ConLoss: 1.6343 Dice: 0.6090 Time: 12.69s
+Valid:	 Epoch[036/300] Loss: 1.5223 Dice: 0.7588 Time: 56.11s
+
+Training:Epoch[037/300] Iteration[010/087] Loss: 2.0957 ConLoss: 1.6680 Dice: 0.6290 Time: 12.79s
+
+Training:Epoch[037/300] Iteration[020/087] Loss: 2.0127 ConLoss: 1.5905 Dice: 0.5706 Time: 12.64s
+
+Training:Epoch[037/300] Iteration[030/087] Loss: 1.9627 ConLoss: 1.6050 Dice: 0.6156 Time: 12.60s
+
+Training:Epoch[037/300] Iteration[040/087] Loss: 1.9607 ConLoss: 1.6193 Dice: 0.5812 Time: 12.61s
+
+Training:Epoch[037/300] Iteration[050/087] Loss: 2.0082 ConLoss: 1.6168 Dice: 0.5484 Time: 12.59s
+
+Training:Epoch[037/300] Iteration[060/087] Loss: 2.1341 ConLoss: 1.6311 Dice: 0.5218 Time: 12.64s
+
+Training:Epoch[037/300] Iteration[070/087] Loss: 2.0472 ConLoss: 1.6215 Dice: 0.6133 Time: 12.65s
+
+Training:Epoch[037/300] Iteration[080/087] Loss: 2.0804 ConLoss: 1.6198 Dice: 0.5815 Time: 12.57s
+Valid:	 Epoch[037/300] Loss: 1.5653 Dice: 0.7561 Time: 55.58s
+
+Training:Epoch[038/300] Iteration[010/087] Loss: 2.0926 ConLoss: 1.6272 Dice: 0.6541 Time: 12.68s
+
+Training:Epoch[038/300] Iteration[020/087] Loss: 1.9914 ConLoss: 1.6683 Dice: 0.6122 Time: 12.57s
+
+Training:Epoch[038/300] Iteration[030/087] Loss: 2.1154 ConLoss: 1.6534 Dice: 0.6031 Time: 12.63s
+
+Training:Epoch[038/300] Iteration[040/087] Loss: 2.0209 ConLoss: 1.6109 Dice: 0.6326 Time: 12.54s
+
+Training:Epoch[038/300] Iteration[050/087] Loss: 1.9981 ConLoss: 1.6234 Dice: 0.6799 Time: 12.64s
+
+Training:Epoch[038/300] Iteration[060/087] Loss: 2.1073 ConLoss: 1.6674 Dice: 0.6079 Time: 12.72s
+
+Training:Epoch[038/300] Iteration[070/087] Loss: 2.1064 ConLoss: 1.6547 Dice: 0.5861 Time: 12.77s
+
+Training:Epoch[038/300] Iteration[080/087] Loss: 2.1472 ConLoss: 1.6852 Dice: 0.5896 Time: 12.73s
+Valid:	 Epoch[038/300] Loss: 1.5456 Dice: 0.7174 Time: 56.16s
+
+Training:Epoch[039/300] Iteration[010/087] Loss: 2.0433 ConLoss: 1.6263 Dice: 0.5802 Time: 12.71s
+
+Training:Epoch[039/300] Iteration[020/087] Loss: 2.0008 ConLoss: 1.6080 Dice: 0.6633 Time: 12.63s
+
+Training:Epoch[039/300] Iteration[030/087] Loss: 1.9644 ConLoss: 1.6269 Dice: 0.6880 Time: 12.62s
+
+Training:Epoch[039/300] Iteration[040/087] Loss: 2.0253 ConLoss: 1.5969 Dice: 0.6377 Time: 12.55s
+
+Training:Epoch[039/300] Iteration[050/087] Loss: 2.0356 ConLoss: 1.6034 Dice: 0.6665 Time: 12.57s
+
+Training:Epoch[039/300] Iteration[060/087] Loss: 2.0502 ConLoss: 1.6236 Dice: 0.6322 Time: 12.65s
+
+Training:Epoch[039/300] Iteration[070/087] Loss: 2.1187 ConLoss: 1.6481 Dice: 0.6475 Time: 12.63s
+
+Training:Epoch[039/300] Iteration[080/087] Loss: 2.0285 ConLoss: 1.5974 Dice: 0.5727 Time: 12.58s
+Valid:	 Epoch[039/300] Loss: 1.5178 Dice: 0.7576 Time: 55.93s
+
+Training:Epoch[040/300] Iteration[010/087] Loss: 2.0268 ConLoss: 1.6231 Dice: 0.5702 Time: 12.72s
+
+Training:Epoch[040/300] Iteration[020/087] Loss: 2.0229 ConLoss: 1.6064 Dice: 0.6224 Time: 12.60s
+
+Training:Epoch[040/300] Iteration[030/087] Loss: 2.1495 ConLoss: 1.6506 Dice: 0.6019 Time: 12.63s
+
+Training:Epoch[040/300] Iteration[040/087] Loss: 2.0421 ConLoss: 1.6328 Dice: 0.6058 Time: 12.65s
+
+Training:Epoch[040/300] Iteration[050/087] Loss: 2.0403 ConLoss: 1.6535 Dice: 0.6335 Time: 12.66s
+
+Training:Epoch[040/300] Iteration[060/087] Loss: 1.9191 ConLoss: 1.5730 Dice: 0.6003 Time: 12.69s
+
+Training:Epoch[040/300] Iteration[070/087] Loss: 2.0709 ConLoss: 1.6372 Dice: 0.6050 Time: 12.56s
+
+Training:Epoch[040/300] Iteration[080/087] Loss: 2.1663 ConLoss: 1.6821 Dice: 0.6060 Time: 12.78s
+Valid:	 Epoch[040/300] Loss: 1.5337 Dice: 0.7592 Time: 55.76s
+
+Training:Epoch[041/300] Iteration[010/087] Loss: 2.1098 ConLoss: 1.6416 Dice: 0.5816 Time: 12.68s
+
+Training:Epoch[041/300] Iteration[020/087] Loss: 2.0538 ConLoss: 1.5998 Dice: 0.5869 Time: 12.60s
+
+Training:Epoch[041/300] Iteration[030/087] Loss: 2.0636 ConLoss: 1.6258 Dice: 0.5535 Time: 12.63s
+
+Training:Epoch[041/300] Iteration[040/087] Loss: 2.0552 ConLoss: 1.6545 Dice: 0.5938 Time: 12.63s
+
+Training:Epoch[041/300] Iteration[050/087] Loss: 2.0747 ConLoss: 1.6301 Dice: 0.5904 Time: 12.67s
+
+Training:Epoch[041/300] Iteration[060/087] Loss: 1.9780 ConLoss: 1.5999 Dice: 0.5849 Time: 12.98s
+
+Training:Epoch[041/300] Iteration[070/087] Loss: 1.9572 ConLoss: 1.6084 Dice: 0.6552 Time: 12.61s
+
+Training:Epoch[041/300] Iteration[080/087] Loss: 2.0612 ConLoss: 1.5955 Dice: 0.5639 Time: 12.79s
+Valid:	 Epoch[041/300] Loss: 1.5216 Dice: 0.7532 Time: 56.00s
+
+Training:Epoch[042/300] Iteration[010/087] Loss: 2.1301 ConLoss: 1.6347 Dice: 0.5394 Time: 12.72s
+
+Training:Epoch[042/300] Iteration[020/087] Loss: 2.0794 ConLoss: 1.6469 Dice: 0.5626 Time: 12.57s
+
+Training:Epoch[042/300] Iteration[030/087] Loss: 1.9614 ConLoss: 1.6016 Dice: 0.6308 Time: 12.60s
+
+Training:Epoch[042/300] Iteration[040/087] Loss: 2.0589 ConLoss: 1.5909 Dice: 0.5891 Time: 12.63s
+
+Training:Epoch[042/300] Iteration[050/087] Loss: 2.0805 ConLoss: 1.6248 Dice: 0.5940 Time: 12.67s
+
+Training:Epoch[042/300] Iteration[060/087] Loss: 1.9638 ConLoss: 1.6079 Dice: 0.5183 Time: 12.64s
+
+Training:Epoch[042/300] Iteration[070/087] Loss: 2.0237 ConLoss: 1.6219 Dice: 0.5823 Time: 12.56s
+
+Training:Epoch[042/300] Iteration[080/087] Loss: 2.0819 ConLoss: 1.6145 Dice: 0.4956 Time: 12.77s
+Valid:	 Epoch[042/300] Loss: 1.5249 Dice: 0.7643 Time: 56.23s
+
+Training:Epoch[043/300] Iteration[010/087] Loss: 2.0634 ConLoss: 1.6134 Dice: 0.6305 Time: 12.66s
+
+Training:Epoch[043/300] Iteration[020/087] Loss: 2.0385 ConLoss: 1.6051 Dice: 0.6547 Time: 12.59s
+
+Training:Epoch[043/300] Iteration[030/087] Loss: 2.0328 ConLoss: 1.6269 Dice: 0.6285 Time: 12.71s
+
+Training:Epoch[043/300] Iteration[040/087] Loss: 1.9718 ConLoss: 1.5759 Dice: 0.5991 Time: 12.60s
+
+Training:Epoch[043/300] Iteration[050/087] Loss: 1.9863 ConLoss: 1.5971 Dice: 0.5921 Time: 12.70s
+
+Training:Epoch[043/300] Iteration[060/087] Loss: 2.2807 ConLoss: 1.6563 Dice: 0.5244 Time: 12.76s
+
+Training:Epoch[043/300] Iteration[070/087] Loss: 1.9603 ConLoss: 1.5938 Dice: 0.5886 Time: 12.80s
+
+Training:Epoch[043/300] Iteration[080/087] Loss: 2.0018 ConLoss: 1.6184 Dice: 0.6387 Time: 12.58s
+Valid:	 Epoch[043/300] Loss: 1.5276 Dice: 0.7705 Time: 56.16s
+
+Training:Epoch[044/300] Iteration[010/087] Loss: 2.0346 ConLoss: 1.6493 Dice: 0.6926 Time: 12.66s
+
+Training:Epoch[044/300] Iteration[020/087] Loss: 2.0506 ConLoss: 1.6081 Dice: 0.6389 Time: 12.66s
+
+Training:Epoch[044/300] Iteration[030/087] Loss: 2.0108 ConLoss: 1.6434 Dice: 0.5904 Time: 12.71s
+
+Training:Epoch[044/300] Iteration[040/087] Loss: 2.0254 ConLoss: 1.6358 Dice: 0.5364 Time: 12.63s
+
+Training:Epoch[044/300] Iteration[050/087] Loss: 1.9794 ConLoss: 1.6310 Dice: 0.7130 Time: 12.69s
+
+Training:Epoch[044/300] Iteration[060/087] Loss: 2.1460 ConLoss: 1.6750 Dice: 0.5619 Time: 12.65s
+
+Training:Epoch[044/300] Iteration[070/087] Loss: 2.0762 ConLoss: 1.6018 Dice: 0.5612 Time: 12.75s
+
+Training:Epoch[044/300] Iteration[080/087] Loss: 1.9911 ConLoss: 1.6045 Dice: 0.5360 Time: 12.70s
+Valid:	 Epoch[044/300] Loss: 1.5621 Dice: 0.7368 Time: 55.89s
+
+Training:Epoch[045/300] Iteration[010/087] Loss: 1.9957 ConLoss: 1.6561 Dice: 0.5189 Time: 12.74s
+
+Training:Epoch[045/300] Iteration[020/087] Loss: 1.9784 ConLoss: 1.5885 Dice: 0.5542 Time: 12.68s
+
+Training:Epoch[045/300] Iteration[030/087] Loss: 2.0662 ConLoss: 1.6058 Dice: 0.5991 Time: 12.62s
+
+Training:Epoch[045/300] Iteration[040/087] Loss: 2.0125 ConLoss: 1.6020 Dice: 0.6152 Time: 12.71s
+
+Training:Epoch[045/300] Iteration[050/087] Loss: 1.9763 ConLoss: 1.6041 Dice: 0.6233 Time: 12.62s
+
+Training:Epoch[045/300] Iteration[060/087] Loss: 2.0153 ConLoss: 1.6010 Dice: 0.6614 Time: 12.61s
+
+Training:Epoch[045/300] Iteration[070/087] Loss: 1.9679 ConLoss: 1.6157 Dice: 0.6448 Time: 12.74s
+
+Training:Epoch[045/300] Iteration[080/087] Loss: 2.1191 ConLoss: 1.6265 Dice: 0.5747 Time: 12.59s
+Valid:	 Epoch[045/300] Loss: 1.5324 Dice: 0.7638 Time: 55.80s
+
+Training:Epoch[046/300] Iteration[010/087] Loss: 1.9446 ConLoss: 1.5893 Dice: 0.6502 Time: 12.67s
+
+Training:Epoch[046/300] Iteration[020/087] Loss: 2.0758 ConLoss: 1.6115 Dice: 0.6095 Time: 12.64s
+
+Training:Epoch[046/300] Iteration[030/087] Loss: 1.8783 ConLoss: 1.5671 Dice: 0.6906 Time: 12.65s
+
+Training:Epoch[046/300] Iteration[040/087] Loss: 1.9928 ConLoss: 1.6010 Dice: 0.6005 Time: 12.63s
+
+Training:Epoch[046/300] Iteration[050/087] Loss: 2.0113 ConLoss: 1.6260 Dice: 0.5863 Time: 12.61s
+
+Training:Epoch[046/300] Iteration[060/087] Loss: 2.0696 ConLoss: 1.6411 Dice: 0.5845 Time: 12.74s
+
+Training:Epoch[046/300] Iteration[070/087] Loss: 1.9831 ConLoss: 1.6156 Dice: 0.5983 Time: 12.76s
+
+Training:Epoch[046/300] Iteration[080/087] Loss: 1.9781 ConLoss: 1.5944 Dice: 0.5973 Time: 12.70s
+Valid:	 Epoch[046/300] Loss: 1.5364 Dice: 0.7555 Time: 56.28s
+
+Training:Epoch[047/300] Iteration[010/087] Loss: 1.9399 ConLoss: 1.6092 Dice: 0.6263 Time: 12.70s
+
+Training:Epoch[047/300] Iteration[020/087] Loss: 1.9914 ConLoss: 1.6099 Dice: 0.6235 Time: 12.65s
+
+Training:Epoch[047/300] Iteration[030/087] Loss: 2.0393 ConLoss: 1.6074 Dice: 0.6705 Time: 12.65s
+
+Training:Epoch[047/300] Iteration[040/087] Loss: 2.0005 ConLoss: 1.6176 Dice: 0.6056 Time: 12.65s
+
+Training:Epoch[047/300] Iteration[050/087] Loss: 1.9967 ConLoss: 1.6325 Dice: 0.6568 Time: 12.61s
+
+Training:Epoch[047/300] Iteration[060/087] Loss: 1.9157 ConLoss: 1.5975 Dice: 0.6439 Time: 12.63s
+
+Training:Epoch[047/300] Iteration[070/087] Loss: 1.9609 ConLoss: 1.5975 Dice: 0.5882 Time: 12.61s
+
+Training:Epoch[047/300] Iteration[080/087] Loss: 1.9388 ConLoss: 1.6057 Dice: 0.6040 Time: 12.74s
+Valid:	 Epoch[047/300] Loss: 1.5612 Dice: 0.7632 Time: 55.94s
+
+Training:Epoch[048/300] Iteration[010/087] Loss: 2.0112 ConLoss: 1.6249 Dice: 0.6274 Time: 12.71s
+
+Training:Epoch[048/300] Iteration[020/087] Loss: 2.0265 ConLoss: 1.5906 Dice: 0.6181 Time: 12.57s
+
+Training:Epoch[048/300] Iteration[030/087] Loss: 2.0282 ConLoss: 1.6355 Dice: 0.6636 Time: 12.63s
+/home/lingkai/.local/lib/python3.8/site-packages/albumentations/augmentations/transforms.py:1613: FutureWarning: This class has been deprecated. Please use RandomBrightnessContrast
+  warnings.warn(
+/home/lingkai/.local/lib/python3.8/site-packages/albumentations/augmentations/transforms.py:1639: FutureWarning: RandomContrast has been deprecated. Please use RandomBrightnessContrast
+  warnings.warn(
+
+Training:Epoch[048/300] Iteration[040/087] Loss: 2.0285 ConLoss: 1.6385 Dice: 0.5348 Time: 12.57s
+
+Training:Epoch[048/300] Iteration[050/087] Loss: 1.9423 ConLoss: 1.6060 Dice: 0.6849 Time: 12.62s
+
+Training:Epoch[048/300] Iteration[060/087] Loss: 2.0252 ConLoss: 1.6182 Dice: 0.6327 Time: 12.64s
+
+Training:Epoch[048/300] Iteration[070/087] Loss: 1.9977 ConLoss: 1.5934 Dice: 0.6164 Time: 12.57s
+
+Training:Epoch[048/300] Iteration[080/087] Loss: 2.0603 ConLoss: 1.6339 Dice: 0.5853 Time: 12.69s
+Valid:	 Epoch[048/300] Loss: 1.5578 Dice: 0.7295 Time: 55.69s
+
+Training:Epoch[049/300] Iteration[010/087] Loss: 2.0321 ConLoss: 1.6141 Dice: 0.6387 Time: 12.70s
+
+Training:Epoch[049/300] Iteration[020/087] Loss: 2.1479 ConLoss: 1.6657 Dice: 0.6238 Time: 12.65s
+
+Training:Epoch[049/300] Iteration[030/087] Loss: 2.0065 ConLoss: 1.5761 Dice: 0.6134 Time: 12.66s
+
+Training:Epoch[049/300] Iteration[040/087] Loss: 2.0553 ConLoss: 1.6170 Dice: 0.6073 Time: 12.58s
+
+Training:Epoch[049/300] Iteration[050/087] Loss: 1.9700 ConLoss: 1.5746 Dice: 0.5909 Time: 12.62s
+
+Training:Epoch[049/300] Iteration[060/087] Loss: 1.8817 ConLoss: 1.5811 Dice: 0.6220 Time: 12.67s
+
+Training:Epoch[049/300] Iteration[070/087] Loss: 1.9752 ConLoss: 1.6051 Dice: 0.6868 Time: 12.78s
+
+Training:Epoch[049/300] Iteration[080/087] Loss: 1.8750 ConLoss: 1.5692 Dice: 0.6402 Time: 12.62s
+Valid:	 Epoch[049/300] Loss: 1.5307 Dice: 0.7405 Time: 55.59s
+
+Training:Epoch[050/300] Iteration[010/087] Loss: 2.1769 ConLoss: 1.6459 Dice: 0.4605 Time: 12.66s
+
+Training:Epoch[050/300] Iteration[020/087] Loss: 2.1227 ConLoss: 1.6395 Dice: 0.5787 Time: 12.70s
+
+Training:Epoch[050/300] Iteration[030/087] Loss: 2.0040 ConLoss: 1.6040 Dice: 0.6372 Time: 12.71s
+
+Training:Epoch[050/300] Iteration[040/087] Loss: 1.9685 ConLoss: 1.5963 Dice: 0.5946 Time: 12.71s
+
+Training:Epoch[050/300] Iteration[050/087] Loss: 1.9894 ConLoss: 1.6235 Dice: 0.6641 Time: 12.74s
+
+Training:Epoch[050/300] Iteration[060/087] Loss: 1.9232 ConLoss: 1.6017 Dice: 0.6664 Time: 12.77s
+
+Training:Epoch[050/300] Iteration[070/087] Loss: 2.0140 ConLoss: 1.5968 Dice: 0.6216 Time: 12.79s
+
+Training:Epoch[050/300] Iteration[080/087] Loss: 2.0451 ConLoss: 1.6065 Dice: 0.6388 Time: 12.66s
+Valid:	 Epoch[050/300] Loss: 1.5442 Dice: 0.7487 Time: 55.76s
+
+Training:Epoch[051/300] Iteration[010/087] Loss: 1.9031 ConLoss: 1.5895 Dice: 0.6692 Time: 12.67s
+
+Training:Epoch[051/300] Iteration[020/087] Loss: 2.0477 ConLoss: 1.6214 Dice: 0.6794 Time: 12.69s
+
+Training:Epoch[051/300] Iteration[030/087] Loss: 2.0573 ConLoss: 1.6325 Dice: 0.5597 Time: 12.63s
+
+Training:Epoch[051/300] Iteration[040/087] Loss: 2.0513 ConLoss: 1.5872 Dice: 0.5958 Time: 12.70s
+
+Training:Epoch[051/300] Iteration[050/087] Loss: 2.0079 ConLoss: 1.6271 Dice: 0.6530 Time: 12.72s
+
+Training:Epoch[051/300] Iteration[060/087] Loss: 1.9487 ConLoss: 1.6222 Dice: 0.6646 Time: 12.66s
+
+Training:Epoch[051/300] Iteration[070/087] Loss: 1.9508 ConLoss: 1.5860 Dice: 0.5842 Time: 12.75s
+Traceback (most recent call last):
+  File "run.py", line 49, in <module>
+    main()
+  File "run.py", line 46, in main
+    simclr.train()
+  File "/mnt/asgard2/code/lingkai/simCLR_unet_brats/simCLR.py", line 119, in train
+    total_loss.backward()
+  File "/home/lingkai/.local/lib/python3.8/site-packages/torch/optim/lr_scheduler.py", line 65, in wrapper
+    return wrapped(*args, **kwargs)
+  File "/home/lingkai/.local/lib/python3.8/site-packages/torch/optim/optimizer.py", line 88, in wrapper
+    return func(*args, **kwargs)
+  File "/home/lingkai/.local/lib/python3.8/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/lingkai/.local/lib/python3.8/site-packages/torch/optim/adam.py", line 133, in step
+    F.adam(params_with_grad,
+  File "/home/lingkai/.local/lib/python3.8/site-packages/torch/optim/_functional.py", line 98, in adam
+    param.addcdiv_(exp_avg, denom, value=-step_size)
+KeyboardInterrupt

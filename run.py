@@ -1,52 +1,49 @@
-from model_2d_unet import UNet
-from dataset import BratsTrainDataset
-from torch.utils.data import DataLoader
+from simCLR import SimCLR
+import argparse
 import torch
-from loss import Loss
-from torch.nn import init
 
-device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
-Epoch = 1000
+def parse_args():
+    parser = argparse.ArgumentParser()
 
-def weights_init_kaiming(m):
-    classname = m.__class__.__name__
-    if classname.find('Conv2d') != -1:
-        init.kaiming_normal(m.weight.data)
+    parser.add_argument('--name', default='BraTS', help='model name: (default: arch+timestamp')
+    parser.add_argument('--dataset', default="Brats2020TrainDataset",
+                        help='dataset name')
+    parser.add_argument('--input_channel', default=4, type=int, help='input channels')
+    parser.add_argument('--output_channel', default=3, type=int, help='input channels')
+    parser.add_argument('--image-ext', default='npy', help='image file extension')
+    parser.add_argument('--mask-ext', default='npy', help='mask file extension')
+    parser.add_argument('--loss', default='BCEDiceLoss')
+    parser.add_argument('--epochs', default=300, type=int, metavar='N',
+                        help='number of total epochs to run')
+    parser.add_argument('--early-stop', default=32, type=int,
+                        metavar='N', help='early stopping (default: 20)')
+    parser.add_argument('-b', '--batch-size', default=64, type=int,
+                        metavar='N', help='mini-batch size (default: 16)')
+    parser.add_argument('--optimizer', default='Adam',
+                        choices=['Adam', 'SGD'],
+                        help='loss: ' +
+                            ' | '.join(['Adam', 'SGD']) +
+                            ' (default: Adam)')
+    parser.add_argument('--lr', '--learning-rate', default=3e-4, type=float,
+                        metavar='LR', help='initial learning rate')
+    parser.add_argument('--weight-decay', default=1e-4, type=float,
+                        help='weight decay')
+    parser.add_argument('--nesterov', default=False,
+                        help='nesterov')
+    parser.add_argument('--use_cuda', default=True)
+    parser.add_argument('--temperature', default=0.5, type=float)
+    parser.add_argument('--validate_frequency', default=1, type=int)
+    parser.add_argument('--print_interval', default=10, type=int)
+    args = parser.parse_args()
 
-def train():
-    train_dataset = BratsTrainDataset(datapath='/mnt/asgard2/data/lingkai/braTS20/BraTS2020_TrainingData', augmentation=None)
-    train_loader = DataLoader(train_dataset, batch_size=16, num_workers=2, shuffle=True)
-    model = UNet().to(device)
-    model.apply(weights_init_kaiming)
-    lossDice = Loss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=300, eta_min=0, last_epoch=-1)
-    model.train()
-    num = 0
-    for epoch in range(Epoch):
-        trainloss = 0
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = data.to(device), target.to(device)
-            optimizer.zero_grad()
-            output = model(data)
-            loss = lossDice(output, target)
+    return args
 
-            loss.backward()
+def main():
+    args = parse_args()
+    torch.cuda.manual_seed_all(1)
 
-            optimizer.step()
+    simclr = SimCLR(args)
+    simclr.train()
 
-            trainloss = trainloss + loss
-            if (batch_idx + 1) % 5 == 0:
-                trainloss = trainloss / 5
-                print('train Epoch {} iteration: {} loss: {:.6f}'.format(epoch, batch_idx + 1, trainloss.data))
-                trainloss = 0
-
-            if epoch >=250:
-                scheduler.step()
-
-
-train()
-        
-
-
-
+if __name__ == "__main__":
+    main()

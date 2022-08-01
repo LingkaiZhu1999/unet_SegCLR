@@ -1,84 +1,224 @@
-from cProfile import label
-from cv2 import norm
-from torch.utils.data import Dataset, DataLoader
-import torch
-import torch.nn.functional as F
-import os
-import nibabel as nib
 import numpy as np
+import cv2
+import random
+
+from skimage.io import imread
+from skimage import color
 from PIL import Image
-import matplotlib.pyplot as plt
-from random import randint
-import monai.transforms as transforms
+
+import torch
+from torch.utils.data import Dataset
+from torchvision import datasets, models, transforms
+from torchvision.transforms.functional import gaussian_blur, affine
 
 class BratsTrainDataset(Dataset):
-    def __init__(self, datapath='/mnt/asgard2/data/lingkai/braTS20/BraTS2020_TrainingData', augmentation=None):
-        self.augmentaion = augmentation
-        self.folderpaths = {
-            'seg': os.path.join(datapath, 'labels/'),
-            'flair': os.path.join(datapath, 'flair/')
-        }
 
-    def __getitem__(self, index):
-        images = {}
-        for name in self.folderpaths:
-            img = nib.load(os.path.join(self.folderpaths[name], f'BraTS20_Training_{str(index+1).zfill(3)}_{name}.nii')).get_fdata()
-            # img = np.array(img.dataobj)
-            if name == 'seg':
-                img[img==4] = 3
-            # img = Image.fromarray(img.astype('uint8'), 'RGB')
-            images[name] = img
-
-        if self.augmentaion:
-            images = self.augmentaion(image=images['flair'],mask=images['seg'])
-        # normalize the non-zero voxels in images
-        images['flair'] = self.normalize(images['flair'])
-        # images = self.crop(images)
-        flair_slice, label_slice = self.get_slice(images)
-        flair_slice, label_slice = self.crop_center(flair_slice), self.crop_center(label_slice)
-        # one-hot encode truth label
-        # label_slice = F.one_hot(torch.from_numpy(label_slice).long().unsqueeze(0), num_classes=4).permute(0, 3, 1, 2).contiguous().squeeze(0)
-        return np.expand_dims(flair_slice, axis=0), np.expand_dims(label_slice, axis=0)
+    def __init__(self, image_path, mask_path, augmentation=None):
+        self.image_path = image_path
+        self.mask_path = mask_path
+        self.augmentation = augmentation
 
     def __len__(self):
-        return len(os.listdir(self.folderpaths['seg'])) - 1
-    
-    def crop_center(self, img, cropx=128, cropy=128):
-        y, x = img.shape
-        startx = x//2 - cropx//2
-        starty = y//2 - cropy//2    
-        return img[starty:starty+cropy, startx:startx+cropx]
+        return len(self.image_path) 
 
+    def __getitem__(self, index):
+        image_path = self.image_path[index]
+        mask_path = self.mask_path[index]
+        # unlabeled_image_path = self.unlabeled_image_path[index]
 
-    def normalize(self, input):
-        normalizeIntensity = transforms.NormalizeIntensity(nonzero=True)
-        input_norm = normalizeIntensity(input)
-        return input_norm
-
-    def get_slice(self, images):
-        _, _, max_z = images['flair'].shape
-        slice_z_num = randint(0, max_z-1)
-        return images['flair'][:, :, slice_z_num], images['seg'][:, :, slice_z_num]
-
-
+        image = np.load(image_path).astype('float32')
+        mask = np.load(mask_path).astype('uint8')
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
         
-    
-# if __name__ == "main":
-#     train_dataset = BratsTrainDataset()
-#     train_loader = DataLoader(train_dataset, batch_size=1, num_workers=1, shuffle=True)
-#     a, b = next(iter(train_loader))
-#     plt.imshow(a[0, 0, :, :], cmap='gray')
-#     print(a.shape)
 
-
-    # def crop(self, images):
-    #     cropForeground = transforms.CropForegroundd(keys=["flair", 'seg'], source_key='flair')
-    #     centerSpatialCrop = transforms.CenterSpatialCropd(keys=['flair', 'seg'], roi_size=(100, 100))
-    #     images = cropForeground(images)
-    #     images = centerSpatialCrop(images)
-    #     # bbox = transforms.utils.generate_spatial_bounding_box(images['flair'])
-    #     # flair = transforms.SpatialCrop(roi_center=bbox[0], roi_end=bbox[1])(flair)
-    #     # label = transforms.SpatialCrop(roi_center=bbox[0], roi_end=bbox[1])(label)
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
         
-    #     # return flair, label
-    #     return images
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+        
+        if self.augmentation is not None:
+            image1, whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.data_transform(
+                image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+            )
+            image2, whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.data_transform(
+                image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+            )
+
+        label1 = np.concatenate((whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1), axis=0)
+        label2 = np.concatenate((whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2), axis=0)
+        return image1.astype('float32'), image2.astype('float32'), label1.astype('uint8'), label2.astype('uint8')
+
+    def data_transform(self, image, whole_tumor_label, tumor_core_label, enhanced_tumor_label):
+        transformed = self.augmentation(image=image[0, :, :], t1=image[1, :, :], t1ce=image[2, :, :], t2=image[3, :, :], mask=whole_tumor_label, tumorCore=tumor_core_label, enhancingTumor=enhanced_tumor_label)
+        flair = np.expand_dims(transformed["image"], axis=0)
+        t1 = np.expand_dims(transformed['t1'], axis=0)
+        t1ce = np.expand_dims(transformed['t1ce'], axis=0)
+        t2 = np.expand_dims(transformed['t2'], axis=0)
+        image = np.concatenate((flair, t1, t1ce, t2), axis=0)
+
+        whole_tumor_label = transformed["mask"] # [w, h]
+        tumor_core_label = transformed['tumorCore']
+        enhanced_tumor_label = transformed['enhancingTumor']
+        whole_tumor_label = np.expand_dims(whole_tumor_label, axis=0) #[1, w, h]
+        tumor_core_label = np.expand_dims(tumor_core_label, axis=0)
+        enhanced_tumor_label = np.expand_dims(enhanced_tumor_label, axis=0)
+        return image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
+
+
+class BratsValidationDataset(Dataset):
+
+    def __init__(self, image_path, mask_path, augmentation=None):
+        self.image_path = image_path
+        self.mask_path = mask_path
+        self.augmentation = augmentation
+
+    def __len__(self):
+        return len(self.image_path) 
+
+    def __getitem__(self, index):
+        image_path = self.image_path[index]
+        mask_path = self.mask_path[index]
+
+        image = np.load(image_path)
+        mask = np.load(mask_path)
+        
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
+        whole_tumor_label = np.expand_dims(whole_tumor_label, axis=0)
+
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
+        tumor_core_label = np.expand_dims(tumor_core_label, axis=0)
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+        enhanced_tumor_label = np.expand_dims(enhanced_tumor_label, axis=0)
+
+        label = np.concatenate((whole_tumor_label, tumor_core_label, enhanced_tumor_label), axis=0)
+        
+        return image.astype('float32'), label.astype('uint8')
+
+
+
+
+
+class BratsSupervisedDataset(Dataset):
+
+    def __init__(self, image_path, mask_path, augmentation=None):
+        self.image_path = image_path
+        self.mask_path = mask_path
+        self.augmentation = augmentation
+
+    def __len__(self):
+        return len(self.image_path) 
+
+    def __getitem__(self, index):
+        image_path = self.image_path[index]
+        mask_path = self.mask_path[index]
+
+        image = np.load(image_path).astype('float32')
+        mask = np.load(mask_path).astype('uint8')
+        
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
+
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+
+        if self.augmentation is not None:
+            image, whole_tumor_label, tumor_core_label, enhanced_tumor_label = self.data_transform(
+                image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+            )
+
+        label = np.concatenate((whole_tumor_label, tumor_core_label, enhanced_tumor_label), axis=0)
+
+        return image.astype('float32'), label.astype('uint8')
+
+    def data_transform(self, image, whole_tumor_label, tumor_core_label, enhanced_tumor_label):
+        transformed = self.augmentation(image=image[0, :, :], t1=image[1, :, :], t1ce=image[2, :, :], t2=image[3, :, :], mask=whole_tumor_label, tumorCore=tumor_core_label, enhancingTumor=enhanced_tumor_label)
+        flair = np.expand_dims(transformed["image"], axis=0)
+        t1 = np.expand_dims(transformed['t1'], axis=0)
+        t1ce = np.expand_dims(transformed['t1ce'], axis=0)
+        t2 = np.expand_dims(transformed['t2'], axis=0)
+        image = np.concatenate((flair, t1, t1ce, t2), axis=0)
+
+        whole_tumor_label = transformed["mask"] # [w, h]
+        tumor_core_label = transformed['tumorCore']
+        enhanced_tumor_label = transformed['enhancingTumor']
+        whole_tumor_label = np.expand_dims(whole_tumor_label, axis=0) #[1, w, h]
+        tumor_core_label = np.expand_dims(tumor_core_label, axis=0)
+        enhanced_tumor_label = np.expand_dims(enhanced_tumor_label, axis=0)
+        return image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
+
+class BratsUnsupervisedDataset(Dataset):
+
+    def __init__(self, image_path, augmentation=None):
+        self.image_path = image_path
+        self.augmentation = augmentation
+
+    def __len__(self):
+        return len(self.image_path) 
+
+    def __getitem__(self, index):
+        image_path = self.image_path[index]
+
+        image = np.load(image_path).astype('float32')
+        
+        image1 = self.data_transform(image)
+        image2 = self.data_transform(image)
+
+        return image1.astype('float32'), image2.astype('float32')
+
+    def data_transform(self, image):
+        transformed = self.augmentation(image=image[0, :, :], t1=image[1, :, :], t1ce=image[2, :, :], t2=image[3, :, :])
+        flair = np.expand_dims(transformed["image"], axis=0)
+        t1 = np.expand_dims(transformed['t1'], axis=0)
+        t1ce = np.expand_dims(transformed['t1ce'], axis=0)
+        t2 = np.expand_dims(transformed['t2'], axis=0)
+        image = np.concatenate((flair, t1, t1ce, t2), axis=0)
+
+        return image
+
+class ConstrastiveLearningDataset:
+    def __init__(self, root_folder):
+        self.root_folder = root_folder
+    
+    @staticmethod    
+    def get_simclr_pipeline_transform(size, s=1):
+        data_transform = transforms.Compose([transforms.RandomHorizontalFlip(),
+                                            transforms.RandomAffine(degrees=0, translate=(0, 0.25)),
+                                            transforms.ColorJitter(0.8 * s, 0.8 * s, 0.8 * s, 0.2 * s),
+                                            transforms.RandomResizedCrop(size=size),
+                                            transforms.GaussianBlur(),
+                                            transforms.Grayscale(),
+                                            transforms.ToTensor()])
+        return data_transform
+
+    def get_dataset(self, name, n_views):
+        dataset = BratsTrainDataset
