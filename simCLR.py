@@ -2,17 +2,16 @@ import torch
 from loss.nt_xent import NTXentLoss
 import torch.nn.functional as F
 from loss.BCEDiceLoss import BCEDiceLoss
-from unet import Unet_SimCLR
+from unet import Unet_SimCLR, Encoder_SimCLR
 from tqdm import tqdm
 import time
-from metrics import compute_dice, Dice
-from dataset import BratsTrainDataset, BratsValidationDataset
-from sklearn.model_selection import train_test_split
+from metrics import compute_dice, Dice, AverageLoss
+from dataset import BratsTrainContrastDataset, BratsSuperviseTrainDataset
 from glob import glob
 import albumentations as A
 import os
 import numpy as np
-from utils import draw_training
+from utils import draw_training, draw_training_loss
 import pickle
 
 class SimCLR(object):
@@ -34,36 +33,94 @@ class SimCLR(object):
 
         return contrast_loss, avg_dice
 
-    def train(self):
-        train_transform = A.Compose(
-        [
+    def CL_train(self):
+        train_transform = A.Compose([
         # A.Resize(200, 200),
         # A.CropNonEmptyMaskIfExists(height=150, width=150),
         A.HorizontalFlip(p=0.5),
-        A.Affine(scale=(1.0, 1.5), p=0.15),
+        A.Affine(scale=(1.0, 1.5), p=0.5),
         A.Affine(translate_percent=(0, 0.25), p=0.5),
-        A.GaussianBlur(sigma_limit=(0.5, 1.5), p=0.15), 
-        A.GaussNoise(var_limit=(0, 0.33), p=0.15),
-        A.RandomBrightness(limit=(0.7, 1.3), p=0.15),
-        A.RandomContrast(limit=(0.65, 1.5), p=0.15)],
+        A.ColorJitter(brightness=0.6)],
         additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
         )
 
-        with open("trainImgPath", "rb") as fp:
-            trainImg_paths = pickle.load(fp)
-        
-        with open("trainLabelPath", "rb") as fp:
-            trainMask_paths = pickle.load(fp)
+        train_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain}/Train/*')
+        # val_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain}/Test/*')
 
-        # trainImg_paths = glob('/mnt/asgard2/data/lingkai/braTS20/slice/BraTS17_TCIA_HGG/image/*')
-        # trainMask_paths = glob('/mnt/asgard2/data/lingkai/braTS20/slice/BraTS17_TCIA_HGG/label/*')
-        valImg_paths = glob('/mnt/asgard2/data/lingkai/braTS20/slice/BraTS17_CBICA_HGG/image/*')
-        valMask_paths = glob('/mnt/asgard2/data/lingkai/braTS20/slice/BraTS17_CBICA_HGG/label/*')
+        train_dataset = BratsTrainContrastDataset(train_paths, augmentation=train_transform)
+        # val_dataset = BratsSuperviseTrainDataset(val_paths, augmentation=None)
 
-        # train_img_paths, val_img_paths, train_mask_paths, val_mask_paths = \
-        # train_test_split(img_paths, mask_paths, test_size=0.2, random_state=41)
-        train_dataset = BratsTrainDataset(trainImg_paths, trainMask_paths, augmentation=train_transform)
-        val_dataset = BratsValidationDataset(valImg_paths, valMask_paths, augmentation=None)
+        train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
+        # val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False,pin_memory=True,drop_last=False)
+
+        model = Encoder_SimCLR(in_channel=self.args.input_channel).to(self.device)
+
+        optimizer = torch.optim.Adam(model.parameters(), self.args.lr, weight_decay=1e-4)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args.epochs, eta_min=0, last_epoch=-1) # Decrease the learning rate
+        loss_contrast_avg_ = []
+        compute_metric = AverageLoss()
+        trigger = 0
+        for epoch in range(self.args.epochs):
+            for i, data in tqdm(enumerate(train_loader, start=1), total=len(train_loader)):
+
+                image1, image2, label = data
+
+                image1 = image1.to(self.device)
+                image2 = image2.to(self.device)
+
+                z1 = model(image1)
+                z2 = model(image2)
+
+                z1 = F.normalize(z1, dim=1)
+                z2 = F.normalize(z2, dim=1)        
+                contrast_loss = self.nt_xent_loss(z1.cpu(), z2.cpu()) 
+                # contrast_loss = self.calculate_contrast_loss(model, image1, image2)
+
+                total_loss =  contrast_loss 
+                
+                # loss_.append(total_loss)
+                # metrics 
+                # diceValue1 = compute_dice(predict1, label1)
+                # diceValue2 = compute_dice(predict2, label2)
+                # avg_dice = (diceValue1 + diceValue2) / 2 
+                # backprop
+                
+                optimizer.zero_grad()
+                total_loss.backward()
+
+                # update weights
+
+                optimizer.step()
+
+                compute_metric.update(contrast_loss)
+            trigger += 1
+            loss_contrast_avg = compute_metric.compute()
+            loss_contrast_avg = loss_contrast_avg.item()
+            loss_contrast_avg_.append(loss_contrast_avg)
+            print('Training: Lr: {} Epoch [{:0>3} / {:0>3}] Contrastive Loss {:.4f}'.format(
+                optimizer.param_groups[0]['lr'], epoch + 1, self.args.epochs, loss_contrast_avg
+            ))
+            draw_training_loss(epoch + 1, loss_contrast_avg_)
+            compute_metric.reset()
+            scheduler.step()
+
+    def joint_train(self):
+
+        train_transform = A.Compose([
+        # A.Resize(200, 200),
+        # A.CropNonEmptyMaskIfExists(height=150, width=150),
+        A.HorizontalFlip(p=0.5),
+        A.Affine(scale=(1.0, 1.5), p=0.5),
+        A.Affine(translate_percent=(0, 0.25), p=0.5),
+        A.ColorJitter(brightness=0.6)],
+        additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
+        )
+
+        train_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain}/Train/*')
+        val_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain}/Test/*')
+
+        train_dataset = BratsTrainContrastDataset(train_paths, augmentation=train_transform)
+        val_dataset = BratsSuperviseTrainDataset(val_paths, augmentation=None)
 
         train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
         val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False,pin_memory=True,drop_last=False)
@@ -72,17 +129,19 @@ class SimCLR(object):
         
         criterion = BCEDiceLoss() # supervise loss function 
 
-        optimizer = torch.optim.Adam(model.parameters(), 3e-4, weight_decay=1e-4)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args.epochs, eta_min=0,
-                                                               last_epoch=-1)
+        optimizer = torch.optim.Adam(model.parameters(), self.args.lr, weight_decay=1e-4)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args.epochs, eta_min=0, last_epoch=-1) # Decrease the learning rate
 
         start_time = time.time()
         end_time = time.time()
         best_val_loss = 10000
-        dice_avg_ = []
+        best_val_dice = 0
+        dice_avg_train = []
+        dice_avg_val = []
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
         compute_metric = Dice()
+        trigger = 0
         for epoch in range(self.args.epochs):
             for i, data in tqdm(enumerate(train_loader, start=1), total=len(train_loader)):
 
@@ -105,7 +164,7 @@ class SimCLR(object):
                 contrast_loss = self.nt_xent_loss(z1.cpu(), z2.cpu()) / 2
                 # contrast_loss = self.calculate_contrast_loss(model, image1, image2)
 
-                total_loss = 5*supervise_loss + contrast_loss 
+                total_loss =  self.args.lam * supervise_loss + contrast_loss 
                 
                 # loss_.append(total_loss)
                 # metrics 
@@ -123,36 +182,43 @@ class SimCLR(object):
 
                 compute_metric.update(predict=predict1, label=label1, loss_sup=supervise_loss1, loss_con=contrast_loss)
                 compute_metric.update(predict=predict2, label=label2, loss_sup=supervise_loss2, loss_con=contrast_loss)
-                # if i % self.args.print_interval == 0:
-                #     start_time, end_time = end_time, time.time()
-                #     print("\nTraining:Epoch[{:0>3}/{:0>3}] Iteration[{:0>3}/{:0>3}] Loss: {:.4f} ConLoss: {:.4f} Dice: {:.4f} Time: {:.2f}s".format(
-                #         epoch + 1, self.args.epochs, i, len(train_loader), total_loss, contrast_loss, avg_dice,  end_time - start_time))
+            trigger += 1
             dice_avg, loss_supervise_avg, loss_contrast_avg = compute_metric.compute()
             dice_avg = torch.mean(dice_avg).item()
             loss_supervise_avg = loss_supervise_avg.item()
             loss_contrast_avg = loss_contrast_avg.item()
-            dice_avg_.append(dice_avg)
+            dice_avg_train.append(dice_avg)
             loss_supervise_avg_.append(loss_supervise_avg)
             loss_contrast_avg_.append(loss_contrast_avg)
-            print('Training: Epoch [{:0>3} / {:0>3}] Total Loss: {:.4f} Supervise Loss: {:.4f} Contrastive Loss {:.4f} Dice: {:.4f}'.format(
-                epoch + 1, self.args.epochs, loss_supervise_avg + loss_contrast_avg, loss_supervise_avg, loss_contrast_avg, dice_avg
+            print('Training: Lr: {} Epoch [{:0>3} / {:0>3}] Total Loss: {:.4f} Supervise Loss: {:.4f} Contrastive Loss {:.4f} Dice: {:.4f}'.format(
+                optimizer.param_groups[0]['lr'], epoch + 1, self.args.epochs, loss_supervise_avg + loss_contrast_avg, loss_supervise_avg, loss_contrast_avg, dice_avg
             ))
             
-            draw_training(epoch + 1, loss_supervise_avg_, loss_contrast_avg_, dice_avg_)
             compute_metric.reset()
             if epoch % self.args.validate_frequency == 0:
                 start_time = time.time()
                 val_loss, val_dice = self.validate(model, val_loader, criterion)
+                dice_avg_val.append(val_dice)
                 end_time = time.time()
+                draw_training(epoch + 1, loss_supervise_avg_, loss_contrast_avg_, dice_avg_train, dice_avg_val)
+                if val_dice > best_val_dice:
+                    best_val_dice = val_dice
+                    torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_valdice_model.pt'))
                 if val_loss < best_val_loss:
+                    trigger = 0
                     best_val_loss = val_loss
-                    torch.save(model.state_dict(), os.path.join('./models', 'best_model.pt'))
+                    torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_contrast_model.pt'))
                     print("Saving best model")
-                print("Valid:\t Epoch[{:0>3}/{:0>3}] Loss: {:.4f} Dice: {:.4f} Time: {:.2f}s".format(
-                    epoch + 1, self.args.epochs, val_loss, val_dice, 
+                print("Valid:\t Epoch[{:0>3}/{:0>3}] Loss: {:.4f} Dice: {:.4f} Best Dice: {:.4f} Time: {:.2f}s \n".format(
+                    epoch + 1, self.args.epochs, val_loss, val_dice, best_val_dice,
                     end_time - start_time))
-            # if epoch >= 10:
-            #     scheduler.step()
+            # early stopping
+            if self.args.early_stop is not None:
+                if trigger >= self.args.early_stop:
+                    print("=> early stopping")
+                    break
+            if epoch >= 10:
+                scheduler.step()
                 
     def validate(self, model, val_loader, criterion):
         model.eval()
@@ -199,7 +265,30 @@ class SimCLR(object):
     #     model.train()
        
 
-
+  # train_transform = A.Compose(
+        # [
+        # # A.Resize(200, 200),
+        # # A.CropNonEmptyMaskIfExists(height=150, width=150),
+        # A.HorizontalFlip(p=0.5),
+        # A.Affine(scale=(1.0, 1.5), p=0.5),
+        # A.Affine(translate_percent=(0, 0.25), p=0.5),
+        # A.GaussianBlur(sigma_limit=(0.5, 1.5), p=0.5), 
+        # A.GaussNoise(var_limit=(0, 0.33), p=0.15),
+        # A.ColorJitter(brightness=0.8, contrast=0.8, saturation=0.8, hue=0.2, p=0.8)],
+        # # A.RandomBrightness(limit=(0.7, 1.3), p=0.15)],
+        # additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
+        # )   
+        # train_transform = A.Compose(
+        # [
+        # # A.Resize(200, 200),
+        # # A.CropNonEmptyMaskIfExists(height=150, width=150),
+        # A.HorizontalFlip(p=0.5),
+        # A.Affine(scale=(1.0, 1.5), p=0.5),
+        # A.Affine(translate_percent=(0, 0.25), p=0.5),
+        # A.ColorJitter(brightness=0.6, p=0.8), 
+        # ],
+        # additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
+        # )
 
 
 

@@ -38,6 +38,19 @@ class Dice(Metric):
         
         return metric
 
+class AverageLoss(Metric):
+    full_state_update: bool = False
+    def __init__(self):
+        super().__init__(dist_sync_on_step=False)
+        self.add_state("loss", default=torch.zeros(1), dist_reduce_fx="sum")
+        self.add_state("steps", default=torch.zeros(1), dist_reduce_fx="sum")
+    def update(self, loss):
+        self.steps += 1
+        self.loss += loss
+
+    def compute(self):
+        return self.loss / self.steps
+        
 def mean_iou(y_true_in, y_pred_in, print_table=False):
     if True: #not np.sum(y_true_in.flatten()) == 0:
         labels = y_true_in

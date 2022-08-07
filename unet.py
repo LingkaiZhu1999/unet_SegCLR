@@ -40,6 +40,30 @@ class Flatten(nn.Module):
     def forward(self, x):
         return x.view(x.size(0), -1)
 
+class Projector_CH(nn.Module):
+    """
+    input: w * h * c
+    output: 128
+    """
+    def __init__(self, in_channels, out_channels=1):
+        super(Projector_CH, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        self.instance_norm = nn.InstanceNorm2d(out_channels)
+        self.relu = nn.ReLU()
+        self.projector_layer = nn.Sequential(
+            Flatten(),
+            nn.Linear(10*10, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64),
+            nn.ReLU(),
+            nn.Linear(64, 64)
+            )
+
+    def forward(self, x):
+        x = self.relu(self.instance_norm(self.conv1(x)))
+        x = self.projector_layer(x)
+        return x
+
 # class Projector(nn.Module):
 #     """
 #     input: w * h * c
@@ -47,41 +71,16 @@ class Flatten(nn.Module):
 #     """
 #     def __init__(self, in_channels, out_channels=1):
 #         super(Projector, self).__init__()
-#         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
-#         self.instance_norm = nn.InstanceNorm2d(out_channels)
-#         self.relu = nn.ReLU()
-#         self.dim = 28 * 28
 #         self.projector_layer = nn.Sequential(
 #             Flatten(),
-#             nn.Linear(100, 64),
+#             nn.Linear(1024*10*10, 1024),
 #             nn.ReLU(),
-#             nn.Linear(64, 64),
-#             nn.ReLU(),
-#             nn.Linear(64, 64)
+#             nn.Linear(1024, 512),
 #             )
 
 #     def forward(self, x):
-#         x = self.relu(self.instance_norm(self.conv1(x)))
 #         x = self.projector_layer(x)
 #         return x
-
-class Projector(nn.Module):
-    """
-    input: w * h * c
-    output: 128
-    """
-    def __init__(self, in_channels, out_channels=1):
-        super(Projector, self).__init__()
-        self.projector_layer = nn.Sequential(
-            Flatten(),
-            nn.Linear(1024*10*10, 512),
-            nn.ReLU(),
-            nn.Linear(512, 128),
-            )
-
-    def forward(self, x):
-        x = self.projector_layer(x)
-        return x
 
 
 class Unet(nn.Module):
@@ -131,7 +130,7 @@ class Unet_SimCLR(nn.Module):
         self.up2 = Upsample_block(256, 128)
         self.up1 = Upsample_block(128, 64)
         self.outconv = nn.Conv2d(64, out_channel, 1)
-        self.projector = Projector(in_channels=1024)
+        self.projector = Projector_CH(in_channels=1024)
 
     def forward(self, x):
         x, y1 = self.down1(x)
@@ -148,8 +147,28 @@ class Unet_SimCLR(nn.Module):
         x1 = self.outconv(x)
         return z, x1
 
+class Encoder_SimCLR(nn.Module):
+    def __init__(self, in_channel=4):
+        super(Encoder_SimCLR, self).__init__()
+        self.down1 = Downsample_block(in_channel, 64)
+        self.down2 = Downsample_block(64, 128)
+        self.down3 = Downsample_block(128, 256)
+        self.down4 = Downsample_block(256, 512)
+        self.conv1 = nn.Conv2d(512, 1024, 3, padding=1)
+        self.gn1 = nn.GroupNorm(num_groups=4, num_channels=1024)
+        self.projector = Projector_CH(in_channels=1024)
+
+    def forward(self, x):
+        x, y1 = self.down1(x)
+        x, y2 = self.down2(x)
+        x, y3 = self.down3(x)
+        x, y4 = self.down4(x)
+        x = F.dropout2d(F.relu(self.gn1(self.conv1(x))))
+        z = self.projector(x)
+        return z
+
 if __name__ == "__main__":
     unet = Unet(in_channel=4, out_channel=3)
-    x = torch.randn(1, 4, 160, 160)
+    x = torch.randn(1, 4, 240, 240)
     y = unet(x)
-    print
+    print(y)

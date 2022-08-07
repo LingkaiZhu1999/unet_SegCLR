@@ -22,7 +22,7 @@ def main():
     with open("valLabelPath", "rb") as fp:
         mask_path = pickle.load(fp)
 
-    model.load_state_dict(torch.load('models/best_model.pt'))
+    model.load_state_dict(torch.load('models/best_contrast_model.pt'))
     test_dataset = BratsValidationDataset(img_path, mask_path)
     test_loader = torch.utils.data.DataLoader(
         test_dataset,
@@ -37,11 +37,11 @@ def main():
     dice_ = []
 
     model.eval()
-    mlp1 = model.projector.projector_layer[1].weight
-    mlp2 = model.projector.projector_layer[3].weight
-    mlp3 = model.projector.projector_layer[5].weight
-    with open("mlp3.txt", 'w') as file:
-        file.write(str(mlp3))
+    # mlp1 = model.projector.projector_layer[1].weight
+    # mlp2 = model.projector.projector_layer[3].weight
+    # mlp3 = model.projector.projector_layer[5].weight
+    # with open("mlp3.txt", 'w') as file:
+    #     file.write(str(mlp3))
     with torch.no_grad():
         for i, (image, target) in tqdm(enumerate(test_loader), total=len(test_loader)):
             image = image.cuda()
