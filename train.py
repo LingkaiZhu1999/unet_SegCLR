@@ -34,16 +34,13 @@ device = torch.device('cuda:0')
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--name', default='BraTS17_CBICA_HGG', help='model name: (default: arch+timestamp')
-    parser.add_argument('--domain', default="BraTS17_CBICA_HGG",
+    parser.add_argument('--name', default='LGG', help='model name: (default: arch+timestamp')
+    parser.add_argument('--domain', default="LGG",
                         help='dataset name')
     parser.add_argument('--input_channel', default=4, type=int, help='input channels')
     parser.add_argument('--output_channel', default=3, type=int, help='input channels')
-    parser.add_argument('--image-ext', default='npy', help='image file extension')
-    parser.add_argument('--mask-ext', default='npy', help='mask file extension')
-    parser.add_argument('--aug', default=True)
     parser.add_argument('--loss', default='BCEDiceLoss')
-    parser.add_argument('--epochs', default=5000, type=int, metavar='N',
+    parser.add_argument('--epochs', default=500, type=int, metavar='N',
                         help='number of total epochs to run')
     parser.add_argument('--early-stop', default=200, type=int,
                         metavar='N', help='early stopping (default: 20)')
@@ -54,7 +51,7 @@ def parse_args():
                         help='loss: ' +
                             ' | '.join(['Adam', 'SGD']) +
                             ' (default: Adam)')
-    parser.add_argument('--lr', '--learning-rate', default=3e-4, type=float,
+    parser.add_argument('--lr', '--learning-rate', default=1e-4, type=float,
                         metavar='LR', help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float,
                         help='momentum')
@@ -64,7 +61,8 @@ def parse_args():
                         help='nesterov')
     parser.add_argument('--evaluate_frequency', default=10, type=int)
     parser.add_argument('--use_cuda', default=True)
-    parser.add_argument('--temperature', default=0.5, type=float)
+    parser.add_argument('--fine_tuning', default=False, type=bool)
+
     args = parser.parse_args()
 
     return args
@@ -150,7 +148,14 @@ def main():
     # create model
     model = Unet(in_channel=args.input_channel, out_channel=args.output_channel)
     # apply kaiming initialization
-    # model.apply(weights_init_kaiming) 
+    model.apply(weights_init_kaiming)
+    if args.fine_tuning:
+        pretrained_dict = torch.load(f'models/{args.name}/best_contrastive_model.pt')
+        model_dict = model.state_dict()
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+        model_dict.update(pretrained_dict)
+        model.load_state_dict(model_dict)
+        print("Fine tuning")
     if args.use_cuda:
         model = model.to(device)
 
@@ -162,7 +167,7 @@ def main():
         optimizer = optim.SGD(model.parameters(), lr=args.lr,
             momentum=args.momentum, weight_decay=args.weight_decay, nesterov=args.nesterov)
     
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=300) # Decrease the learning rate
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs, eta_min=0, last_epoch=-1) # Decrease the learning rate
     
     # data augmentation
     train_transform = A.Compose([
@@ -220,14 +225,14 @@ def main():
         log = pd.concat([log, tmp])
         log.to_csv('models/%s/log.csv' %args.name, index=False)
         trigger += 1
-        draw_training_supervise(epoch + 1, loss_sup=log['loss'].to_numpy(), dice_train=log['dice'].to_numpy(), dice_val=log['val_dice'].to_numpy())
+        draw_training_supervise(epoch + 1, loss_sup=log['loss'].to_numpy(), dice_train=log['dice'].to_numpy(), dice_val=log['val_dice'].to_numpy(), fig_name=args.name)
         if val_log['dice'] > best_dice:
-            torch.save(model.state_dict(), 'models/%s_supervise/best_val_dice_model.pth' %args.name)
+            torch.save(model.state_dict(), 'models/%s/best_val_dice_model.pth' %args.name)
             best_dice = val_log['dice']
             print(f"=> saved best val dice model")
             trigger = 0
         if train_log['loss'] < best_train_loss:
-            torch.save(model.state_dict(), 'models/%s_supervise/best_train_loss_model.pth' %args.name)
+            torch.save(model.state_dict(), 'models/%s/best_train_loss_model.pth' %args.name)
             print("=> save the best train loss model")
 
         # early stopping
@@ -235,8 +240,8 @@ def main():
             if trigger >= args.early_stop:
                 print("=> early stopping")
                 break
-        
-        scheduler.step()
+        if epoch >= 10:
+            scheduler.step()
 
         torch.cuda.empty_cache()
 

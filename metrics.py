@@ -19,6 +19,8 @@ class Dice(Metric):
         if self.brats:
             predict = (torch.sigmoid(predict) > 0.5).int().cpu()
             label = label.cpu()
+            loss_sup = loss_sup.detach().cpu()
+            loss_con = loss_con.detach().cpu()
 
         self.steps += 1
         self.loss_supervise += loss_sup

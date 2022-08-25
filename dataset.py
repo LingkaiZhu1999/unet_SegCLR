@@ -17,6 +17,9 @@ from random import randint
 from monai import transforms
 
 class BratsTrainContrastDataset(Dataset):
+    """
+    Dataset for contrastive learning of the BraTS 2020 challenge dataset.
+    """
     def __init__(self, datapath='/mnt/asgard2/data/lingkai/braTS20/BraTS2020_TrainingData', augmentation=None):
         self.augmentaion = augmentation
         self.datapath = datapath
@@ -47,6 +50,16 @@ class BratsTrainContrastDataset(Dataset):
             image2, whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.data_transform(
                 image_slice2, whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2
             )
+        else: 
+            image1 = image_slice1
+            image2 = image_slice2
+            whole_tumor_label1 = np.expand_dims(whole_tumor_label1, axis=0) #[1, w, h]
+            tumor_core_label1 = np.expand_dims(tumor_core_label1, axis=0)
+            enhanced_tumor_label1 = np.expand_dims(enhanced_tumor_label1, axis=0)
+
+            whole_tumor_label2 = np.expand_dims(whole_tumor_label2, axis=0) #[1, w, h]
+            tumor_core_label2 = np.expand_dims(tumor_core_label2, axis=0)
+            enhanced_tumor_label2 = np.expand_dims(enhanced_tumor_label2, axis=0)
         label1 = np.concatenate((whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1), axis=0)
         label2 = np.concatenate((whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2), axis=0)
         return image1, image2, label1, label2
@@ -109,8 +122,8 @@ class BratsTrainContrastDataset(Dataset):
             t1_1 = np.expand_dims(images['t1'][:, :, slice_z_num1], axis=0)
             t2_1 = np.expand_dims(images['t2'][:, :, slice_z_num1], axis=0)
             seg_1 = images['seg'][:, :, slice_z_num1]
-        image = np.concatenate((flair, t1ce, t1, t2), axis=0)
-        image1 = np.concatenate((flair_1, t1ce_1, t1_1, t2_1), axis=0)
+        image = np.concatenate((flair, t1, t1ce, t2), axis=0)
+        image1 = np.concatenate((flair_1, t1_1, t1ce_1, t2_1), axis=0)
         return image.astype('float32'), image1.astype('float32'), seg.astype('uint8'), seg_1.astype('uint8')
 
     def data_transform(self, image, whole_tumor_label, tumor_core_label, enhanced_tumor_label):
@@ -120,6 +133,129 @@ class BratsTrainContrastDataset(Dataset):
         t1ce = np.expand_dims(transformed['t1ce'], axis=0)
         t2 = np.expand_dims(transformed['t2'], axis=0)
         image = np.concatenate((flair, t1, t1ce, t2), axis=0)
+
+        whole_tumor_label = transformed["mask"] # [w, h]
+        tumor_core_label = transformed['tumorCore']
+        enhanced_tumor_label = transformed['enhancingTumor']
+        whole_tumor_label = np.expand_dims(whole_tumor_label, axis=0) #[1, w, h]
+        tumor_core_label = np.expand_dims(tumor_core_label, axis=0)
+        enhanced_tumor_label = np.expand_dims(enhanced_tumor_label, axis=0)
+        return image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
+    def mask_label_process(self, mask):
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
+        
+
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
+        
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+
+        return whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
+class BratsTrainContrastDataset_one_modularity(Dataset):
+    """
+    Dataset for contrastive learning of the BraTS 2020 challenge dataset.
+    """
+    def __init__(self, volumeType=['flair', 'seg'], datapath='/mnt/asgard2/data/lingkai/braTS20/BraTS2020_TrainingData', augmentation=None):
+        self.augmentaion = augmentation
+        self.datapath = datapath
+        self.volumeType = volumeType
+        self.IsCrop = True
+    def __getitem__(self, index):
+        # 1st volume
+        images = {}
+        folderpath = self.datapath[index]
+        for name in self.volumeType:
+            img = nib.load(os.path.join(folderpath, f'{folderpath[-20:]}_{name}.nii')).get_fdata()
+            if name == 'seg':
+                img[img==4] = 3
+            images[name] = img
+        # normalize the non-zero voxels in images
+        images[self.volumeType[0]] = self.normalize(images[self.volumeType[0]])
+
+        image, image1 = self.get_slice(images)
+        whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.mask_label_process(image['seg'])
+        whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.mask_label_process(images['seg'])
+        if self.augmentaion is not None:
+            image1, whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.data_transform(
+                image[0], whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1
+            )
+            image2, whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.data_transform(
+                image1[0], whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2
+            )
+        else: 
+            image1 = np.expand_dims(image[self.volumeType[0]], 0)
+            image2 = np.expand_dims(image1[self.volumeType[0]], 0)
+            whole_tumor_label1 = np.expand_dims(whole_tumor_label1, axis=0) #[1, w, h]
+            tumor_core_label1 = np.expand_dims(tumor_core_label1, axis=0)
+            enhanced_tumor_label1 = np.expand_dims(enhanced_tumor_label1, axis=0)
+
+            whole_tumor_label2 = np.expand_dims(whole_tumor_label2, axis=0) #[1, w, h]
+            tumor_core_label2 = np.expand_dims(tumor_core_label2, axis=0)
+            enhanced_tumor_label2 = np.expand_dims(enhanced_tumor_label2, axis=0)
+        label1 = np.concatenate((whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1), axis=0)
+        label2 = np.concatenate((whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2), axis=0)
+        return image1, image2, label1, label2
+
+    def __len__(self):
+        return len(self.datapath) - 1
+    
+    def crop_center(self, img, cropx=160, cropy=160):
+        y, x = img.shape
+        startx = x//2 - cropx//2
+        starty = y//2 - cropy//2    
+        return img[starty:starty+cropy, startx:startx+cropx]
+
+
+    def normalize(self, input):
+        normalizeIntensity = transforms.NormalizeIntensity(nonzero=True)
+        input_norm = normalizeIntensity(input)
+        return input_norm
+
+    def get_slice(self, images):
+        _, _, max_z = images['flair'].shape
+        while True:
+            slice_z_num = randint(0, max_z-1)
+            if np.max(images['seg'][:, :, slice_z_num]) != 0: break
+        for name in self.volumeType:
+            if self.IsCrop:
+                images[name] = self.crop_center(images[name][:, :, slice_z_num])
+            else:
+                images[name] = images[name][:, :, slice_z_num]
+        # 2nd
+        while True:
+            if slice_z_num - 0 < 5:
+                left_bound = 0
+            else:
+                left_bound = slice_z_num - 5
+            if slice_z_num + 5 > max_z:
+                right_bound = max_z
+            else:
+                right_bound = slice_z_num + 5 
+            slice_z_num1 = randint(left_bound, right_bound)
+            if np.max(images['seg'][:, :, slice_z_num1]) != 0: break
+            # if index1 != index: break
+        images1 = images.copy()
+        for name in self.volumeType:
+            if self.IsCrop:
+                images1[name] = self.crop_center(images[name][:, :, slice_z_num1])
+            else:
+                images1[name] = images[name][:, :, slice_z_num1]
+        return images, images1
+
+    def data_transform(self, image, whole_tumor_label, tumor_core_label, enhanced_tumor_label):
+        transformed = self.augmentaion(image=image, mask=whole_tumor_label, tumorCore=tumor_core_label, enhancingTumor=enhanced_tumor_label)
+        image = np.expand_dims(transformed["image"], axis=0)
 
         whole_tumor_label = transformed["mask"] # [w, h]
         tumor_core_label = transformed['tumorCore']
@@ -256,6 +392,150 @@ class BratsSuperviseTrainDataset(Dataset):
 
         return whole_tumor_label, tumor_core_label, enhanced_tumor_label
 
+from glob import glob
+import numpy as np
+import cv2
+import random
+
+from skimage.io import imread
+from skimage import color
+from PIL import Image
+
+import torch
+from torch.utils.data import Dataset
+from torchvision import datasets, models, transforms
+from torchvision.transforms.functional import gaussian_blur, affine
+import albumentations as A
+import os
+import nibabel as nib
+from random import randint
+from monai import transforms
+torch.cuda.manual_seed_all(1)
+
+class BratsTrainContrastDataset_one_modularity(Dataset):
+    """
+    Dataset for contrastive learning of the BraTS 2020 challenge dataset.
+    """
+    def __init__(self, volumeType=['flair', 'seg'], datapath='/mnt/asgard2/data/lingkai/braTS20/BraTS2020_TrainingData', augmentation=None):
+        self.augmentaion = augmentation
+        self.datapath = datapath
+        self.volumeType = volumeType
+        self.IsCrop = True
+    def __getitem__(self, index):
+        # 1st volume
+        images = {}
+        folderpath = self.datapath[index]
+        for name in self.volumeType:
+            img = nib.load(os.path.join(folderpath, f'{folderpath[-20:]}_{name}.nii')).get_fdata()
+            if name == 'seg':
+                img[img==4] = 3
+            images[name] = img
+        # normalize the non-zero voxels in images
+        images[self.volumeType[0]] = self.normalize(images[self.volumeType[0]])
+
+        images1, images2 = self.get_slice(images)
+        whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.mask_label_process(images1['seg'])
+        whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.mask_label_process(images2['seg'])
+        if self.augmentaion is not None:
+            image1, whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.data_transform(
+                images1[self.volumeType[0]], whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1
+            )
+            image2, whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2 = self.data_transform(
+                images2[self.volumeType[0]], whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2
+            )
+        else: 
+            image1 = np.expand_dims(images1[self.volumeType[0]], 0)
+            image2 = np.expand_dims(images2[self.volumeType[0]], 0)
+            whole_tumor_label1 = np.expand_dims(whole_tumor_label1, axis=0) #[1, w, h]
+            tumor_core_label1 = np.expand_dims(tumor_core_label1, axis=0)
+            enhanced_tumor_label1 = np.expand_dims(enhanced_tumor_label1, axis=0)
+
+            whole_tumor_label2 = np.expand_dims(whole_tumor_label2, axis=0) #[1, w, h]
+            tumor_core_label2 = np.expand_dims(tumor_core_label2, axis=0)
+            enhanced_tumor_label2 = np.expand_dims(enhanced_tumor_label2, axis=0)
+        label1 = np.concatenate((whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1), axis=0)
+        label2 = np.concatenate((whole_tumor_label2, tumor_core_label2, enhanced_tumor_label2), axis=0)
+        return image1, image2, label1, label2
+
+    def __len__(self):
+        return len(self.datapath) - 1
+    
+    def crop_center(self, img, cropx=160, cropy=160):
+        y, x = img.shape
+        startx = x//2 - cropx//2
+        starty = y//2 - cropy//2    
+        return img[starty:starty+cropy, startx:startx+cropx]
+
+
+    def normalize(self, input):
+        normalizeIntensity = transforms.NormalizeIntensity(nonzero=True)
+        input_norm = normalizeIntensity(input)
+        return input_norm
+
+    def get_slice(self, images):
+        _, _, max_z = images['flair'].shape
+        images1 = images.copy()
+        while True:
+            slice_z_num = randint(0, max_z-1)
+            if np.max(images['seg'][:, :, slice_z_num]) != 0: break
+        for name in self.volumeType:
+            if self.IsCrop:
+                images1[name] = self.crop_center(images[name][:, :, slice_z_num])
+            else:
+                images1[name] = images[name][:, :, slice_z_num]
+        # 2nd
+        while True:
+            if slice_z_num - 0 < 5:
+                left_bound = 0
+            else:
+                left_bound = slice_z_num - 5
+            if slice_z_num + 5 > max_z:
+                right_bound = max_z
+            else:
+                right_bound = slice_z_num + 5 
+            slice_z_num1 = randint(left_bound, right_bound)
+            if np.max(images['seg'][:, :, slice_z_num1]) != 0: break
+            # if index1 != index: break
+        images2 = images.copy()
+        for name in self.volumeType:
+            if self.IsCrop:
+                images2[name] = self.crop_center(images[name][:, :, slice_z_num1])
+            else:
+                images2[name] = images[name][:, :, slice_z_num1]
+        return images1, images2
+
+    def data_transform(self, image, whole_tumor_label, tumor_core_label, enhanced_tumor_label):
+        transformed = self.augmentaion(image=image, mask=whole_tumor_label, tumorCore=tumor_core_label, enhancingTumor=enhanced_tumor_label)
+        image = np.expand_dims(transformed["image"], axis=0)
+
+        whole_tumor_label = transformed["mask"] # [w, h]
+        tumor_core_label = transformed['tumorCore']
+        enhanced_tumor_label = transformed['enhancingTumor']
+        whole_tumor_label = np.expand_dims(whole_tumor_label, axis=0) #[1, w, h]
+        tumor_core_label = np.expand_dims(tumor_core_label, axis=0)
+        enhanced_tumor_label = np.expand_dims(enhanced_tumor_label, axis=0)
+        return image, whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
+    def mask_label_process(self, mask):
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
+        
+
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
+        
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+
+        return whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
 class BratsTestDataset(Dataset):
     def __init__(self, datapaths, augmentation=None):
         self.augmentaion = augmentation
@@ -311,21 +591,77 @@ class BratsTestDataset(Dataset):
 
         return whole_tumor_label, tumor_core_label, enhanced_tumor_label
 
+class BratsTestDataset_one_modularity(Dataset):
+    def __init__(self, datapaths, volumeType=['flair', 'seg'], augmentation=None):
+        self.augmentaion = augmentation
+        self.datapath = datapaths
+        self.volumeType = volumeType
+    
+    def __getitem__(self, index):
+        images = {}
+        # folderpaths = os.path.join(self.datapath, f'BraTS20_Training_{str(index).zfill(3)}')
+        folderpath = self.datapath[index]
+        for name in self.volumeType:
+            img = nib.load(os.path.join(folderpath, f'{folderpath[-20:]}_{name}.nii')).get_fdata()
+            if name == 'seg':
+                img[img==4] = 3
+            images[name] = img
+        # normalize the non-zero voxels in images
+        images[self.volumeType[0]] = self.normalize(images[self.volumeType[0]])
+
+        whole_tumor_label1, tumor_core_label1, enhanced_tumor_label1 = self.mask_label_process(images['seg'])
+        
+        label = np.concatenate((np.expand_dims(whole_tumor_label1, 0), np.expand_dims(tumor_core_label1, 0), np.expand_dims(enhanced_tumor_label1, 0)), axis=0)
+        return images, label
+
+    def __len__(self):
+        return len(self.datapath) - 1
+    
+    def normalize(self, input):
+        normalizeIntensity = transforms.NormalizeIntensity(nonzero=True)
+        input_norm = normalizeIntensity(input)
+        return input_norm
+
+
+    def mask_label_process(self, mask):
+        whole_tumor_label = mask.copy()
+        whole_tumor_label[mask==1] = 1
+        whole_tumor_label[mask==2] = 1
+        whole_tumor_label[mask==3] = 1
+        
+
+        tumor_core_label = mask.copy()
+        tumor_core_label[mask==1] = 1
+        tumor_core_label[mask==2] = 0
+        tumor_core_label[mask==3] = 1
+        
+
+        enhanced_tumor_label = mask.copy()
+        enhanced_tumor_label[mask==1] = 0
+        enhanced_tumor_label[mask==2] = 0
+        enhanced_tumor_label[mask==3] = 1
+
+        return whole_tumor_label, tumor_core_label, enhanced_tumor_label
+
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
     train_transform = A.Compose([
         # A.Resize(200, 200),
         # A.CropNonEmptyMaskIfExists(height=150, width=150),
         A.HorizontalFlip(p=0.5),
-        A.Affine(scale=(1.0, 1.5), p=0.15),
+        A.Affine(scale=(1.0, 1.3), p=0.5),
         A.Affine(translate_percent=(0, 0.25), p=0.5),
-        A.GaussianBlur(sigma_limit=(0.5, 1.5), p=0.15), 
-        A.GaussNoise(var_limit=(0, 0.33), p=0.15),
-        A.RandomBrightness(limit=(0.7, 1.3), p=0.15),
-        A.RandomContrast(limit=(0.65, 1.5), p=0.15)],
-        additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
+        A.ColorJitter(brightness=0.2, contrast=0, saturation=0, hue=0),
+        A.ToGray(always_apply=True)],
+        additional_targets={'tumorCore': 'mask', 'enhancingTumor': 'mask'}
         )
-
-    train_dataset = BratsTrainContrastDataset(augmentation=train_transform)
-    dataloader = torch.utils.data.DataLoader(train_dataset,batch_size=16,shuffle=True,pin_memory=True,drop_last=False)
+    test_paths = glob('/mnt/asgard2/data/lingkai/braTS20/BraTS17_TCIA_HGG/Train/*')
+    test_dataset = BratsTrainContrastDataset_one_modularity(datapath=test_paths, augmentation=train_transform)
+    dataloader = torch.utils.data.DataLoader(test_dataset,batch_size=1,shuffle=False,pin_memory=True,drop_last=False)
     for batch_idx, data in enumerate(dataloader):
         image1, image2, label1, label2 = data
+        fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 15))
+        ax[0].imshow(image1[0, 0], cmap='gray')
+        ax[1].imshow(image2[0, 0], cmap='gray')
+        # plt.imshow(image2[0, 0, :, :])
+        break
