@@ -7,28 +7,28 @@ from torchmetrics import Metric
 
 class Dice(Metric):
     full_state_update: bool = False
-    def __init__(self, n_class=3, brats=True):
+    def __init__(self, device, n_class=3, brats=True):
         super().__init__(dist_sync_on_step=False)
         self.n_class = n_class
         self.brats = brats
-        self.add_state("loss_supervise", default=torch.zeros(1), dist_reduce_fx="sum")
-        self.add_state("loss_contrast", default=torch.zeros(1), dist_reduce_fx="sum")
-        self.add_state("steps", default=torch.zeros(1), dist_reduce_fx="sum")
-        self.add_state("dice", default=torch.zeros((n_class,)), dist_reduce_fx="sum")
+        self.add_state("loss_supervise", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
+        self.add_state("loss_contrast", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
+        self.add_state("steps", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
+        self.add_state("dice", default=torch.zeros((n_class,)).to(device), dist_reduce_fx="sum")
     def update(self, predict, label, loss_sup, loss_con):
         if self.brats:
-            predict = (torch.sigmoid(predict) > 0.5).int().cpu()
-            label = label.cpu()
-            loss_sup = loss_sup.detach().cpu()
-            loss_con = loss_con.detach().cpu()
+            predict = (torch.sigmoid(predict) > 0.5).int()
+            label = label
+            loss_sup = loss_sup.detach()
+            loss_con = loss_con.detach()
 
         self.steps += 1
         self.loss_supervise += loss_sup
         self.loss_contrast += loss_con
-        self.dice += self.compute_metric(predict, label, compute_meandice, 1, 0)
+        self.dice += self.compute_metric(predict, label, compute_meandice, torch.tensor(1), torch.tensor(0))
 
     def compute(self):
-        return self.dice.numpy() / self.steps, self.loss_supervise.numpy() / self.steps, self.loss_contrast.numpy() / self.steps
+        return self.dice / self.steps, self.loss_supervise / self.steps, self.loss_contrast / self.steps
 
     def compute_metric(self, predict, label, metric_function, best_metric, worst_metric):
         metric = metric_function(predict, label, include_background=self.brats)
