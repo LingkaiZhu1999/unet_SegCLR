@@ -206,9 +206,10 @@ class SimCLR(object):
                     val_contrastive = self.validate_contrastive(model=model, val_loader1=val_target_loader) 
                     # val_contrastive_target = self.validate_contrastive(model=model, val_loader1=val_target_loader) # only target domain contrastive validation
                 
-                val_loss_.append(val_loss.cpu().detach().numpy())
+                
                 val_dice, val_supervised_loss = self.validate_dice(self.args, val_source_3d_loader, model, criterion)
                 val_loss = val_contrastive + self.args.lam * val_supervised_loss
+                val_loss_.append(val_loss.cpu().detach().numpy())
                 writer.add_scalar("Loss/val_supervise", val_supervised_loss, epoch)
                 writer.add_scalar("Loss/val_contrastive", val_contrastive, epoch)
                 writer.add_scalar("Loss/val_total", val_loss, epoch)
@@ -495,6 +496,7 @@ class SimCLR(object):
                     output = Unet_model(images_slice)
                     supervised_loss += criterion(output, label)
                     predicted[:, :, :, slice_num_z] = output.detach()
+                supervised_loss /= nums_z
                 diceMetric.update(predicted.unsqueeze(0), label, supervised_loss.detach(), torch.tensor(0).to(self.device)) # maybe move to gpu to accelerate computing in the next training step
         dice_avg, supervised_loss_avg , _ = diceMetric.compute()
         dice_wl, dice_tc, dice_et = dice_avg
