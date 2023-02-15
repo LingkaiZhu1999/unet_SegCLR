@@ -41,82 +41,6 @@ class SimCLR(object):
 
         return contrast_loss
 
-    def CL_train(self):
-        train_transform = A.Compose([
-        # A.Resize(200, 200),
-        # A.CropNonEmptyMaskIfExists(height=150, width=150),
-        A.VerticalFlip(p=0.5),
-        A.Affine(scale=(1.0, 1.5), p=0.5),
-        A.Affine(translate_percent=(0, 0.25), p=0.5),
-        A.ColorJitter(brightness=0.6)],
-        additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
-        )
-
-        train_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain_target}/All/*')
-        # val_paths = glob(f'/mnt/asgard2/data/lingkai/braTS20/{self.args.domain}/Test/*')
-
-        train_dataset = BratsTrainContrastDataset(train_paths, augmentation=train_transform)
-        # val_dataset = BratsSuperviseTrainDataset(val_paths, augmentation=None)
-
-        train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
-        # val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False,pin_memory=True,drop_last=False)
-
-        model = Encoder_SimCLR(in_channel=self.args.input_channel).to(self.device)
-
-        optimizer = torch.optim.Adam(model.parameters(), self.args.lr, weight_decay=1e-4)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args.epochs, eta_min=0, last_epoch=-1) # Decrease the learning rate
-        loss_contrast_avg_ = []
-        compute_metric = AverageLoss()
-        trigger = 0
-        smallest_loss = 100
-        for epoch in range(self.args.epochs):
-            for i, data in tqdm(enumerate(train_loader, start=1), total=len(train_loader)):
-
-                image1, image2, _, _ = data
-
-                image1 = image1.to(self.device)
-                image2 = image2.to(self.device)
-
-                z1 = model(image1)
-                z2 = model(image2)
-
-                z1 = F.normalize(z1, dim=1)
-                z2 = F.normalize(z2, dim=1)        
-                contrast_loss = self.nt_xent_loss(z1.cpu(), z2.cpu()) 
-                # contrast_loss = self.calculate_contrast_loss(model, image1, image2)
-
-                total_loss =  contrast_loss 
-                
-                # loss_.append(total_loss)
-                # metrics 
-                # diceValue1 = compute_dice(predict1, label1)
-                # diceValue2 = compute_dice(predict2, label2)
-                # avg_dice = (diceValue1 + diceValue2) / 2 
-                # backprop
-                
-                optimizer.zero_grad()
-                total_loss.backward()
-
-                # update weights
-
-                optimizer.step()
-
-                compute_metric.update(contrast_loss)
-            trigger += 1
-            loss_contrast_avg = compute_metric.compute()
-            loss_contrast_avg = loss_contrast_avg.item()
-            loss_contrast_avg_.append(loss_contrast_avg)
-            print('Training: Lr: {} Epoch [{:0>3} / {:0>3}] Contrastive Loss {:.4f}'.format(
-                optimizer.param_groups[0]['lr'], epoch + 1, self.args.epochs, loss_contrast_avg
-            ))
-            draw_training_loss(epoch + 1, loss_contrast_avg_)
-            compute_metric.reset()
-            if epoch > self.args.warm_up:
-                scheduler.step()
-            if loss_contrast_avg < smallest_loss:
-                smallest_loss = loss_contrast_avg
-                torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_contrastive_model.pt'))
-
     def joint_train_on_source_and_target(self):
 
         print(self.args.contrastive_mode)
@@ -149,13 +73,13 @@ class SimCLR(object):
         # val_supervise_dataset = BratsSuperviseTrainDataset(val_source_paths, augmentation=train_transform)
         val_source_3d_dataset = BratsTestDataset(val_source_paths, augmentation=None)
 
-        train_source_loader = torch.utils.data.DataLoader(train_source_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
-        train_target_loader = torch.utils.data.DataLoader(train_target_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
+        train_source_loader = torch.utils.data.DataLoader(train_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
+        train_target_loader = torch.utils.data.DataLoader(train_target_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
 
         # val_supervise_loader = torch.utils.data.DataLoader(val_supervise_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
-        val_target_loader = torch.utils.data.DataLoader(val_target_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
-        val_source_loader = torch.utils.data.DataLoader(val_source_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
-        val_source_3d_loader = torch.utils.data.DataLoader(val_source_3d_dataset,batch_size=1,shuffle=True,pin_memory=True,drop_last=False)
+        val_target_loader = torch.utils.data.DataLoader(val_target_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
+        val_source_loader = torch.utils.data.DataLoader(val_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
+        val_source_3d_loader = torch.utils.data.DataLoader(val_source_3d_dataset,batch_size=1,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
 
         model = Unet_SimCLR(in_channel=self.args.input_channel, out_channel=self.args.output_channel).to(self.device)
         # model.apply(weights_init_kaiming) 
@@ -176,7 +100,7 @@ class SimCLR(object):
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
         epoch_ = []
-        compute_metric = Dice()
+        compute_metric = Dice().to(self.device)
         trigger = 0
         for epoch in range(self.args.epochs):
             epoch_.append(epoch)
@@ -192,10 +116,10 @@ class SimCLR(object):
                 image_target1 = image_target1.to(self.device)
                 image_target2 = image_target2.to(self.device)
                 with torch.autocast(device_type='cuda', dtype=torch.float16):
-                    z11, predict_source1 = model(image_source1)
-                    z22, _ = model(image_source2)
-                    z1, _ = model(image_target1)
-                    z2, _ = model(image_target2)
+                    z11, predict_source1 = model(image_source1, only_encoder=False)
+                    z22 = model(image_source2, only_encoder=True)
+                    z1 = model(image_target1, only_encoder=True)
+                    z2 = model(image_target2, only_encoder=True)
 
 
 
@@ -240,7 +164,7 @@ class SimCLR(object):
                 scaler.step(optimizer)
                 scaler.update()
                 optimizer.zero_grad()
-
+                # print(torch.cuda.memory_summary(device=self.device))
                 # update weights
 
                 # optimizer.step()
@@ -270,7 +194,7 @@ class SimCLR(object):
 
             if epoch % self.args.validate_frequency == 0:
                 start_time = time.time()
-                val_supervise = self.validate_supervise(model, val_source_loader)
+                # val_supervise = self.validate_supervise(model, val_source_loader)
                 if self.args.contrastive_mode == 'within_domain':
                     val_contrastive_source = self.validate_contrastive(model=model, val_loader1=val_source_loader)
                     val_contrastive_target = self.validate_contrastive(model=model, val_loader1=val_target_loader)
@@ -281,11 +205,11 @@ class SimCLR(object):
                 if self.args.contrastive_mode == 'only_target_domain':
                     val_contrastive = self.validate_contrastive(model=model, val_loader1=val_target_loader) 
                     # val_contrastive_target = self.validate_contrastive(model=model, val_loader1=val_target_loader) # only target domain contrastive validation
-                val_loss = val_contrastive + self.args.lam * val_supervise
-
+                
                 val_loss_.append(val_loss.cpu().detach().numpy())
-                val_dice = self.validate_dice(self.args, val_source_3d_loader, model)
-                writer.add_scalar("Loss/val_supervise", val_supervise, epoch)
+                val_dice, val_supervised_loss = self.validate_dice(self.args, val_source_3d_loader, model, criterion)
+                val_loss = val_contrastive + self.args.lam * val_supervised_loss
+                writer.add_scalar("Loss/val_supervise", val_supervised_loss, epoch)
                 writer.add_scalar("Loss/val_contrastive", val_contrastive, epoch)
                 writer.add_scalar("Loss/val_total", val_loss, epoch)
                 writer.add_scalar("Metric/val_dice", val_dice, epoch)
@@ -305,8 +229,8 @@ class SimCLR(object):
                     best_val_loss = val_loss
                     torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_total_val_loss_model.pt'))
                     print("Saving best model")
-                if val_supervise < best_val_supervise_loss:
-                    best_val_supervise_loss = val_supervise
+                if val_supervised_loss < best_val_supervise_loss:
+                    best_val_supervise_loss = val_supervised_loss
                     torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_supervise_val_loss_model.pt'))
                 # if val_contrastive_target < best_val_contrastive_loss:
                 #     best_val_contrastive_loss = val_contrastive
@@ -350,11 +274,11 @@ class SimCLR(object):
             train_source_dataset = BratsTrainContrastDataset_only_data_aug(train_source_paths, augmentation=train_transform)
             val_con_dataset = BratsTrainContrastDataset_only_data_aug(val_paths, augmentation=train_transform)
             print('aug')
-        train_source_loader = torch.utils.data.DataLoader(train_source_dataset,batch_size=self.args.batch_size,shuffle=True,pin_memory=True,drop_last=False)
+        train_source_loader = torch.utils.data.DataLoader(train_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
 
         val_dataset = BratsTestDataset(val_paths, augmentation=None) # for dice metric
-        val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False,pin_memory=True,drop_last=False)
-        val_con_loader = torch.utils.data.DataLoader(val_con_dataset, batch_size=self.args.batch_size, shuffle=True,pin_memory=True,drop_last=False)
+        val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False, num_workers=2, pin_memory=True,drop_last=False)
+        val_con_loader = torch.utils.data.DataLoader(val_con_dataset, batch_size=self.args.batch_size, shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
         
         model = Unet_SimCLR(in_channel=self.args.input_channel, out_channel=self.args.output_channel).to(self.device)
        
@@ -378,7 +302,7 @@ class SimCLR(object):
         val_loss_ = []
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
-        compute_metric = Dice()
+        compute_metric = Dice().to(self.device)
         trigger = 0
         model.train()
         for epoch in range(self.args.epochs):
@@ -411,7 +335,7 @@ class SimCLR(object):
                 scaler.step(optimizer)
                 scaler.update()
                 optimizer.zero_grad()
-
+                # print(torch.cuda.memory_summary(device=self.device))
                 compute_metric.update(predict=predict1, label=label1, loss_sup=supervise_loss, loss_con=contrast_loss)
 
             trigger += 1
@@ -436,7 +360,7 @@ class SimCLR(object):
             compute_metric.reset()
             if epoch % self.args.validate_frequency == 0:
                 start_time = time.time()
-                val_dice = self.validate_dice(self.args, val_loader, model)
+                val_dice, val_supervised_loss = self.validate_dice(self.args, val_loader, model, criterion)
                 val_dice_.append(val_dice)
                 end_time = time.time()
                 val_supervise = self.validate_supervise(model, val_con_loader)
@@ -498,10 +422,10 @@ class SimCLR(object):
                     image_target1 = image_target1.to(self.device)
                     image_target2 = image_target2.to(self.device)
                     with torch.autocast(device_type='cuda', dtype=torch.float16):
-                        z11, _ = model(image_val1)
-                        z22, _ = model(image_val2)
-                        z1, _ = model(image_target1)
-                        z2, _ = model(image_target2)
+                        z11 = model(image_val1, only_encoder=True)
+                        z22 = model(image_val2, only_encoder=True)
+                        z1 = model(image_target1, only_encoder=True)
+                        z2 = model(image_target2, only_encoder=True)
                         z1 = torch.concat((z1, z11), dim=0)
                         z2 = torch.concat((z2, z22), dim=0)   
                         z1 = F.normalize(z1, dim=1)
@@ -543,8 +467,8 @@ class SimCLR(object):
             avg_loss /= counter
         return avg_loss
     
-    def validate_dice(self, args, val_loader, model):
-        diceMetric = Dice()
+    def validate_dice(self, args, val_loader, model, criterion):
+        diceMetric = Dice().to(self.device)
         segclr_model_dict = model.state_dict()
         Unet_model = Unet(in_channel=args.input_channel, out_channel=args.output_channel).to(self.device)
         Unet_model_dict = Unet_model.state_dict()
@@ -554,101 +478,30 @@ class SimCLR(object):
         Unet_model.eval()
         with torch.no_grad():
             for batch_idx, (images, label) in tqdm(enumerate(val_loader), total=len(val_loader)):
+                label = label.to(self.device)
                 predicted = torch.empty((3, 240, 240, 155)).to(self.device)
                 _, _, _, nums_z = images['flair'].shape
+                flair = images['flair'].to(self.device)
+                t1ce = images['t1ce'].to(self.device)
+                t1 = images['t1'].to(self.device)
+                t2 = images['t2'].to(self.device)
+                supervised_loss = 0
                 for slice_num_z in range(0, nums_z):
-                    flair_slice = images['flair'][:, :, :, slice_num_z]
-                    t1ce_slice = images['t1ce'][:, :, :, slice_num_z]
-                    t1_slice = images['t1'][:, :, :, slice_num_z]
-                    t2_slice = images['t2'][:, :, :, slice_num_z]
+                    flair_slice = flair[:, :, :, slice_num_z]
+                    t1ce_slice = t1ce[:, :, :, slice_num_z]
+                    t1_slice = t1[:, :, :, slice_num_z]
+                    t2_slice = t2[:, :, :, slice_num_z]
                     images_slice = torch.concat((flair_slice, t1_slice, t1ce_slice, t2_slice), dim=0).unsqueeze(0).to(self.device)
                     output = Unet_model(images_slice)
+                    supervised_loss += criterion(output, label)
                     predicted[:, :, :, slice_num_z] = output.detach()
-                diceMetric.update(predicted.unsqueeze(0), label, torch.tensor(0), torch.tensor(0)) # maybe move to gpu to accelerate computing in the next training step
-        dice_avg, _ , _ = diceMetric.compute()
+                diceMetric.update(predicted.unsqueeze(0), label, supervised_loss.detach(), torch.tensor(0).to(self.device)) # maybe move to gpu to accelerate computing in the next training step
+        dice_avg, supervised_loss_avg , _ = diceMetric.compute()
         dice_wl, dice_tc, dice_et = dice_avg
-        dice_avg = torch.mean(dice_avg).detach().numpy()
+        dice_avg = torch.mean(dice_avg).cpu().detach().numpy()
         print(f"Model: {args.domain_source} Domain: {args.domain_source} Average Dice: {dice_avg} Whole Tumor: {dice_wl} Tumor Core: {dice_tc} Enhanced Tumor: {dice_et}")
-        return dice_avg
-
-    # def validate_dice_one_slice(self, args, val_loader, model):
-    #     diceMetric = Dice().cpu()
-    #     # switch to evaluate mode
-    #     segclr_model_dict = model.state_dict()
-    #     Unet_model = Unet(in_channel=args.input_channel, out_channel=args.output_channel).to(self.device)
-    #     Unet_model_dict = Unet_model.state_dict()
-    #     segclr_model_dict = {k: v for k, v in segclr_model_dict.items() if k in Unet_model_dict}
-    #     Unet_model_dict.update(segclr_model_dict)
-    #     Unet_model.load_state_dict(Unet_model_dict)
-    #     Unet_model.eval()
-    #     with torch.no_grad():
-    #         for i, (input, target) in tqdm(enumerate(val_loader), total=len(val_loader)):
-    #             input = input.to(self.device)
-    #             target = target.to(self.device)
-    #             with torch.no_grad():
-    #                 output = Unet_model(input)
-    #             diceMetric.update(output, target, torch.tensor(0), torch.tensor(0))
-        
-    #     dice_avg, _, _ = diceMetric.compute()
-    #     dice_avg = torch.mean(dice_avg)
-    #     return dice_avg
-    # def validate_one_slice(self, model, val_loader):
-    #     with torch.no_grad():
-    #         model.eval()
-    #         val_loss = 0
-    #         avg_dice = 0
-    #         counter = 0
-    #         for image1, image2, label1, label2 in val_loader:
-    #             image1 = image1.to(self.device)
-    #             image2 = image2.to(self.device)
-
-    #             loss, dice = self.calculate_contrast_loss(model, image1, image2, label1, label2)
-
-    #             val_loss += loss.item()
-    #             avg_dice += dice
-                
-    #             counter += 1
-
-    #         val_loss /= counter
-    #         avg_dice /= counter
-    #     model.train()
-       
-
-  # train_transform = A.Compose(
-        # [
-        # # A.Resize(200, 200),
-        # # A.CropNonEmptyMaskIfExists(height=150, width=150),
-        # A.HorizontalFlip(p=0.5),
-        # A.Affine(scale=(1.0, 1.5), p=0.5),
-        # A.Affine(translate_percent=(0, 0.25), p=0.5),
-        # A.GaussianBlur(sigma_limit=(0.5, 1.5), p=0.5), 
-        # A.GaussNoise(var_limit=(0, 0.33), p=0.15),
-        # A.ColorJitter(brightness=0.8, contrast=0.8, saturation=0.8, hue=0.2, p=0.8)],
-        # # A.RandomBrightness(limit=(0.7, 1.3), p=0.15)],
-        # additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
-        # )   
-        # train_transform = A.Compose(
-        # [
-        # # A.Resize(200, 200),
-        # # A.CropNonEmptyMaskIfExists(height=150, width=150),
-        # A.HorizontalFlip(p=0.5),
-        # A.Affine(scale=(1.0, 1.5), p=0.5),
-        # A.Affine(translate_percent=(0, 0.25), p=0.5),
-        # A.ColorJitter(brightness=0.6, p=0.8), 
-        # ],
-        # additional_targets={'t1': 'image', 't1ce': 'image', 't2': 'image', 'tumorCore': 'mask', 'enhancingTumor': 'mask'}
-        # )
-        
-            #   print(i)
-            #     if i == 0:
-            #         for batch_idx, source_data in tqdm(enumerate(train_source_dataset, start=1), total=len(train_source_dataset)):
-            #             image_source1, image_source2, label_source1, label_source2 = source_data
-            #             image_source1 = image_source1.to(self.device)
-            #             image_source2 = image_source2.to(self.device)
-            #             z1_source, predict1_source = model(image_source1)
-            #             z2_source, _ = model(image_source2)
-            #             supervise_loss_source = criterion(predict1_source, label_source1)
-            #             contrast_loss_source = self.nt_xent_loss(z1_source.cpu(), z2.cpu())
+        model.train()
+        return dice_avg, supervised_loss_avg
 
 
 
