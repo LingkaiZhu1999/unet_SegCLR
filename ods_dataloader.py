@@ -8,6 +8,8 @@ from PIL import Image
 
 from torch.utils import data
 from torchvision import transforms 
+import albumentations as A
+import cv2
 
 def augment_data(image, tissue_mask):
     """
@@ -90,6 +92,7 @@ class ImageDataset(BaseDataset):
         self.image_names = self.split_data
         self.label_names = self.split_data
         self.val_source = val_source
+        self.dataset = dataset
         if dataset == 'refuge':
             self.mapping = {(0, 0, 0): 0, # 0 = background
                             (255, 255, 0): 1, # 1 = class 1, cup
@@ -131,7 +134,7 @@ class ImageDataset(BaseDataset):
         # annotation = Image.open(os.path.join(self.anno_path, image_name))
         mask = np.array(Image.open(os.path.join(self.mask_path, label_name)))
 
-        if self.augmentation is not None and self.pair_gen:
+        if self.pair_gen:
             if not self.val_source:
                 transformed1 = self.augmentation(image=image, mask=mask)
                 image1, mask1 = transformed1['image'], transformed1['mask']
@@ -151,5 +154,13 @@ class ImageDataset(BaseDataset):
                 return transforms.ToTensor()(image), self.mask_to_class_rgb(mask), transforms.ToTensor()(image1), transforms.ToTensor()(image2),  \
             self.mask_to_class_rgb(mask1), self.mask_to_class_rgb(mask2)
         else:
-            return transforms.ToTensor(image), self.mask_to_class_rgb(mask)
+            # if self.dataset == 'idrid':
+            #     return transforms.ToTensor()(A.resize(image, 576, 576, interpolation=cv2.INTER_AREA)), A.resize(self.mask_to_class_rgb(mask), 576, 576, interpolation=cv2.INTER_AREA)
+            # else:
+            if self.augmentation is not None:
+                transformed = self.augmentation(image=image, mask=mask)
+                image, mask = transformed['image'], transformed['mask']
+                return transforms.ToTensor()(image), self.mask_to_class_rgb(mask)
+            else:
+                return transforms.ToTensor()(image), self.mask_to_class_rgb(mask)
 

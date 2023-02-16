@@ -10,7 +10,7 @@ def parse_args():
     parser.add_argument('--name', default='', help='model name: (default: arch+timestamp')
     parser.add_argument('--domain_source', default="refuge",
                         help='source dataset name') # source
-    parser.add_argument('--domain_target', default="idrid",
+    parser.add_argument('--domain_target', default="rimone",
                         help='target dataset name') # target 
     parser.add_argument('--input_channel', default=3, type=int, help='input channels')
     parser.add_argument('--output_channel', default=1, type=int, help='input channels')

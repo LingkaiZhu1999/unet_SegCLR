@@ -87,7 +87,7 @@ class SegCLR(object):
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
         epoch_ = []
-        compute_metric = Dice().to(self.device)
+        compute_metric = Dice(n_class=1).to(self.device)
         trigger = 0
         for epoch in range(self.args.epochs):
             epoch_.append(epoch)
@@ -278,7 +278,7 @@ class SegCLR(object):
         val_loss_ = []
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
-        compute_metric = Dice().to(self.device)
+        compute_metric = Dice(n_class=1).to(self.device)
         trigger = 0
         model.train()
         for epoch in range(self.args.epochs):
@@ -417,7 +417,7 @@ class SegCLR(object):
         return avg_loss
 
     def validate_source_domain(self, val_loader, model, criterion, epoch, writer):
-        diceMetric = Dice().cpu()
+        diceMetric = Dice(n_class=1).cpu()
         # switch to evaluate mode
         model.eval()
         with torch.no_grad():
