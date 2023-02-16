@@ -97,8 +97,8 @@ class ImageDataset(BaseDataset):
                             (0, 0, 0): 1, # 1 = class 1, disc
                             }
         elif dataset == 'rimone':
-            self.mapping = {(255, 255, 0): 0, # 0 = background
-                            (0, 0, 0): 1, # 1 = class 1, disc
+            self.mapping = {(0, 0, 0): 0, # 0 = background
+                            (255, 255, 255): 1, # 1 = class 1, disc
                             }
         else:
             raise ValueError('Dataset not specified by the dataloader file, please add the dataset.')
@@ -108,7 +108,7 @@ class ImageDataset(BaseDataset):
         return len(self.image_names)
 
     def mask_to_class_rgb(self, mask):
-        mask = torch.from_numpy(mask.copy())
+        mask = torch.from_numpy(mask)
         mask_out = torch.empty(mask.shape[0], mask.shape[1], dtype=torch.long)
         for k in self.mapping:
             idx = (mask == torch.tensor(k, dtype=torch.uint8))
@@ -123,9 +123,13 @@ class ImageDataset(BaseDataset):
     def __getitem__(self, idx):
         image_name = self.image_names[idx] 
         label_name = self.label_names[idx]
+
         image = np.array(Image.open(os.path.join(self.image_path, image_name)))
         # annotation = Image.open(os.path.join(self.anno_path, image_name))
-        mask = np.array(Image.open(os.path.join(self.mask_path, label_name)))
+        mask = np.array(Image.open(os.path.join(self.mask_path, label_name)).convert('RGB'))
+        np.set_printoptions(threshold=np.inf)
+        f = open('label.txt', 'w')
+        f.write(str(mask))
         if not self.test:
             image, mask = augment_data(image, mask)
         if self.augmentation is not None:
@@ -133,5 +137,6 @@ class ImageDataset(BaseDataset):
             image, mask = transformed['image'], transformed['mask']
             return transforms.ToTensor()(image), self.mask_to_class_rgb(mask)
         else:
-            return transforms.ToTensor()(image.copy()), self.mask_to_class_rgb(mask)
+            print('yes')
+            return transforms.ToTensor()(image.copy()), self.mask_to_class_rgb(mask.copy())
 
