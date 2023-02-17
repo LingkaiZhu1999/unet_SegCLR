@@ -7,14 +7,14 @@ from torchmetrics import Metric
 
 class Dice(Metric):
     full_state_update: bool = False
-    def __init__(self, device, n_class=3, brats=True):
+    def __init__(self, n_class=3, brats=True):
         super().__init__(dist_sync_on_step=False)
         self.n_class = n_class
         self.brats = brats
-        self.add_state("loss_supervise", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
-        self.add_state("loss_contrast", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
-        self.add_state("steps", default=torch.zeros(1).to(device), dist_reduce_fx="sum")
-        self.add_state("dice", default=torch.zeros((n_class,)).to(device), dist_reduce_fx="sum")
+        self.add_state("loss_supervise", default=torch.zeros(1), dist_reduce_fx="sum")
+        self.add_state("loss_contrast", default=torch.zeros(1), dist_reduce_fx="sum")
+        self.add_state("steps", default=torch.zeros(1), dist_reduce_fx="sum")
+        self.add_state("dice", default=torch.zeros((n_class,)), dist_reduce_fx="sum")
     def update(self, predict, label, loss_sup, loss_con):
         if self.brats:
             predict = (torch.sigmoid(predict) > 0.5).int()
