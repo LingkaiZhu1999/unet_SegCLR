@@ -128,8 +128,6 @@ class ImageDataset(BaseDataset):
         # annotation = Image.open(os.path.join(self.anno_path, image_name))
         mask = np.array(Image.open(os.path.join(self.mask_path, label_name)).convert('RGB'))
         np.set_printoptions(threshold=np.inf)
-        f = open('label.txt', 'w')
-        f.write(str(mask))
         if not self.test:
             image, mask = augment_data(image, mask)
         if self.augmentation is not None:
@@ -137,6 +135,5 @@ class ImageDataset(BaseDataset):
             image, mask = transformed['image'], transformed['mask']
             return transforms.ToTensor()(image), self.mask_to_class_rgb(mask)
         else:
-            print('yes')
-            return transforms.ToTensor()(image.copy()), self.mask_to_class_rgb(mask.copy())
+            return transforms.ToTensor()(image), self.mask_to_class_rgb(mask)
 

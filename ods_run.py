@@ -19,7 +19,7 @@ def parse_args():
                         help='number of total epochs to run')
     parser.add_argument('--early-stop', default=50, type=int,
                         metavar='N', help='early stopping (default: 20)')
-    parser.add_argument('-b', '--batch-size', default=8, type=int,
+    parser.add_argument('-b', '--batch-size', default=4, type=int,
                         metavar='N', help='mini-batch size (default: 16)')
     parser.add_argument('--optimizer', default='SGD',
                         choices=['Adam', 'SGD'],
@@ -43,11 +43,12 @@ def parse_args():
 
     parser.add_argument('--lam', default=1000, type=int) # lambda 
 
-    parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--device', default='cuda:1')
     parser.add_argument('--mode', default='aug')
-    parser.add_argument('--contrastive_mode', default='within_domain') # con mode
+    parser.add_argument('--contrastive_mode', default='only_source_domain') # con mode
     args = parser.parse_args()
-    args.name = f'Eye_{args.domain_source}_adapt_{args.domain_target}_lambda_{args.lam}_batchsize_{args.batch_size}_{args.contrastive_mode}_{args.mode}_Cch_seed_{args.seed}'
+    # args.name = f'Eye_{args.domain_source}_adapt_{args.domain_target}_lambda_{args.lam}_batchsize_{args.batch_size}_{args.contrastive_mode}_{args.mode}_Cch_seed_{args.seed}'
+    args.name = 'test'
     return args
 
 def main():

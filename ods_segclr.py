@@ -1,5 +1,5 @@
 import torch
-from loss.nt_xent import NTXentLoss
+from loss.new_nt_xent import NTXentLoss
 import torch.nn.functional as F
 # from loss.BCEDiceLoss import BCEDiceLoss
 from ods_unet import SegCLR_U_Net
@@ -237,83 +237,86 @@ class SegCLR(object):
         writer.close()
     
     def joint_train_on_source(self):
-         
+        print(self.args.contrastive_mode)
         writer = SummaryWriter(log_dir=f'./models/{self.args.name}')
-        print(f"Source Domain: {self.args.domain_source} Model: {self.args.name}")
-        
+        print('Only Source Domain')
         train_transform = A.Compose([
         A.RandomRotate90(p=0.5),
         A.Flip(p=0.5),
         A.Affine(scale=(1.0, 1.25), p=0.5),
-        A.ColorJitter()],
+        A.ColorJitter(), 
+        A.Resize(576, 576, always_apply=True, interpolation=cv2.INTER_AREA)],
         )
 
-        train_source_dataset = BratsTrainContrastDataset_only_data_aug(train_source_paths, augmentation=train_transform)
-        val_con_dataset = BratsTrainContrastDataset_only_data_aug(val_paths, augmentation=train_transform)
+        train_source_dataset = ImageDataset(dataset=self.args.domain_source, image_path=f'../{self.args.domain_source}/crop/images/', mask_path=f'../{self.args.domain_source}/crop/masks/', mode='train', split_path=f'../{self.args.domain_source}/{self.args.domain_source}_split.csv', augmentation=train_transform, pair_gen=True)
+       
+
+        
+        val_source_dataset = ImageDataset(dataset=self.args.domain_source, image_path=f'../{self.args.domain_source}/crop/images/', mask_path=f'../{self.args.domain_source}/crop/masks/', mode='val', split_path=f'../{self.args.domain_source}/{self.args.domain_source}_split.csv', augmentation=train_transform, pair_gen=True, val_source=True)
+        train_val_source_dataset = ConcatDataset([train_source_dataset, val_source_dataset])
+
         train_source_loader = torch.utils.data.DataLoader(train_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
 
-        val_dataset = BratsTestDataset(val_paths, augmentation=None) # for dice metric
-        val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False, num_workers=2, pin_memory=True,drop_last=False)
-        val_con_loader = torch.utils.data.DataLoader(val_con_dataset, batch_size=self.args.batch_size, shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
-        
-        model = Unet_SimCLR(in_channel=self.args.input_channel, out_channel=self.args.output_channel).to(self.device)
-       
-        # model.apply(weights_init_kaiming) 
-        
-        criterion = BCEDiceLoss().to(device=self.device) # supervise loss function 
+        val_source_loader = torch.utils.data.DataLoader(val_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
+        train_val_source_loader = torch.utils.data.DataLoader(train_val_source_dataset,batch_size=self.args.batch_size,shuffle=True,num_workers=2,pin_memory=True,drop_last=False)
 
-        optimizer = torch.optim.Adam(model.parameters(), self.args.lr, weight_decay=1e-4)
+        model = SegCLR_U_Net(in_channels=self.args.input_channel, classes=self.args.output_channel).to(self.device)
+        criterion = torch.nn.BCEWithLogitsLoss() # supervise loss function 
+
+        if self.args.optimizer == 'Adam':
+            optimizer = torch.optim.Adam(model.parameters(), lr=self.args.lr)
+        elif self.args.optimizer == 'SGD':
+            optimizer = torch.optim.SGD(model.parameters(), lr=self.args.lr, momentum=self.args.momentum, weight_decay=self.args.weight_decay, nesterov=self.args.nesterov)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.args.epochs, eta_min=0, last_epoch=-1) # Decrease the learning rate
         scaler = torch.cuda.amp.grad_scaler.GradScaler(enabled=True)
-        
+
         start_time = time.time()
         end_time = time.time()
         best_val_loss = 10000
         best_val_dice = 0
-        best_train_loss = 100000
         best_val_supervise_loss = 10000
-        epoch_ = []
+        best_val_contrastive_loss = 10000
         dice_avg_train = []
-        val_dice_ = []
         val_loss_ = []
         loss_supervise_avg_ = []
         loss_contrast_avg_ = []
+        epoch_ = []
         compute_metric = Dice(n_class=1).to(self.device)
         trigger = 0
-        model.train()
         for epoch in range(self.args.epochs):
             epoch_.append(epoch)
             for i, data in tqdm(enumerate(train_source_loader, start=1), total=len(train_source_loader)):
-                image1, image2, label1, label2 = data
 
-                image1 = image1.to(self.device)
-                image2 = image2.to(self.device)
-                label1 = label1.to(self.device)
-                label2 = label2.to(self.device)
+                image_source1, image_source2, label_source1, label_source2 = data
+
+                image_source1 = image_source1.to(self.device)
+                image_source2 = image_source2.to(self.device)
+                label_source1 = label_source1.to(self.device)
 
                 with torch.autocast(device_type='cuda', dtype=torch.float16):
-                    z1, predict1 = model(image1)
-                    z2, _ = model(image2)
-
-                    supervise_loss = criterion(predict1, label1)
- 
+                    z1, predict_source1 = model(image_source1, only_encoder=False)
+                    z2 = model(image_source2, only_encoder=True)
                     z1 = F.normalize(z1, dim=1)
                     z2 = F.normalize(z2, dim=1)
 
-                # memory.push(z1=z1, z2=z2)     
-                
-                
+                    supervise_loss = criterion(predict_source1, label_source1.float())
+
                     contrast_loss = self.nt_xent_loss(z1, z2) 
-                # dynamic lambda later
+
+                    # ---only on the target domain---
                     total_loss =  self.args.lam * supervise_loss + contrast_loss
+                
                 # backprop
                 scaler.scale(total_loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
                 optimizer.zero_grad()
                 # print(torch.cuda.memory_summary(device=self.device))
-                compute_metric.update(predict=predict1, label=label1, loss_sup=supervise_loss, loss_con=contrast_loss)
+                # update weights
 
+                # optimizer.step()
+
+                compute_metric.update(predict=predict_source1, label=label_source1, loss_sup=supervise_loss, loss_con=contrast_loss)
             trigger += 1
             dice_avg, loss_supervise_avg, loss_contrast_avg = compute_metric.compute()
             dice_avg = torch.mean(dice_avg).item()
@@ -323,30 +326,27 @@ class SegCLR(object):
             loss_supervise_avg_.append(loss_supervise_avg)
             loss_contrast_avg_.append(loss_contrast_avg)
 
-             # tensorboard
+            # tensorboard
             writer.add_scalar("Loss/train_contrastive", loss_contrast_avg, epoch)
             writer.add_scalar("Loss/train_supervise", loss_supervise_avg, epoch)
             writer.add_scalar("Loss/train_total_loss", self.args.lam * loss_supervise_avg + loss_contrast_avg, epoch)
             writer.add_scalar("Metric/train_dice", dice_avg, epoch)
-
+            
             print('Training: Lr: {} Epoch [{:0>3} / {:0>3}] Total Loss: {:.4f} Supervise Loss: {:.4f} Contrastive Loss {:.4f} Dice: {:.4f}'.format(
-                optimizer.param_groups[0]['lr'], epoch + 1, self.args.epochs, loss_supervise_avg*self.args.lam + loss_contrast_avg, loss_supervise_avg, loss_contrast_avg, dice_avg
+                optimizer.param_groups[0]['lr'], epoch + 1, self.args.epochs, self.args.lam * loss_supervise_avg + loss_contrast_avg, loss_supervise_avg, loss_contrast_avg, dice_avg
             ))
             
             compute_metric.reset()
+
             if epoch % self.args.validate_frequency == 0:
                 start_time = time.time()
-                val_dice = self.validate_dice(self.args, val_loader, model)
-                val_dice_.append(val_dice)
-                end_time = time.time()
-                val_supervise = self.validate_supervise(model, val_con_loader)
-                val_contrastive = self.validate_contrastive(model, val_con_loader)
-                val_loss = self.args.lam * val_supervise + val_contrastive
-                val_loss_.append(val_loss)
-                draw_training_joint_on_source(epoch + 1, loss_supervise_avg_, loss_contrast_avg_, dice_avg_train, val_dice_, val_loss_, fig_name=self.args.name, lam=self.args.lam)
+                val_dice, val_supervise = self.validate_source_domain(val_source_loader, model, criterion, epoch, writer)
+                val_contrastive_source = self.validate_contrastive(model=model, val_loader1=val_source_loader, val_source=True)
+                val_loss = val_contrastive_source + self.args.lam * val_supervise
 
+                val_loss_.append(val_loss.cpu().detach().numpy())
                 writer.add_scalar("Loss/val_supervise", val_supervise, epoch)
-                writer.add_scalar("Loss/val_contrastive", val_contrastive, epoch)
+                writer.add_scalar("Loss/val_contrastive", val_contrastive_source, epoch)
                 writer.add_scalar("Loss/val_total", val_loss, epoch)
                 writer.add_scalar("Metric/val_dice", val_dice, epoch)
                 df = pd.DataFrame({
@@ -358,9 +358,8 @@ class SegCLR(object):
                     'total_val_loss': val_loss_
                 })
                 df.to_csv(f'./models/{self.args.name}/log.csv', index=False)
-                
-                # model selection
-
+                end_time = time.time()
+                # draw_training(epoch + 1, loss_supervise_avg_, loss_contrast_avg_, dice_avg_train, val_loss_, fig_name=self.args.name, lam=self.args.lam)
                 if val_loss < best_val_loss:
                     trigger = 0
                     best_val_loss = val_loss
@@ -369,20 +368,24 @@ class SegCLR(object):
                 if val_supervise < best_val_supervise_loss:
                     best_val_supervise_loss = val_supervise
                     torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_supervise_val_loss_model.pt'))
+                # if val_contrastive_target < best_val_contrastive_loss:
+                #     best_val_contrastive_loss = val_contrastive
+                #     torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_contrastive_val_loss_model.pt'))
                 if val_dice > best_val_dice:
                     best_val_dice = val_dice
                     torch.save(model.state_dict(), os.path.join(f'./models/{self.args.name}', 'best_val_dice_model.pt'))
-
-                print("Valid:\t Epoch[{:0>3}/{:0>3}] Dice: {:.4f} Time: {:.2f}s \n".format(
-                    epoch + 1, self.args.epochs, val_dice,
+                print("Valid:\t Epoch[{:0>3}/{:0>3}] Loss: {:.4f} Time: {:.2f}s \n".format(
+                    epoch + 1, self.args.epochs, val_loss,
                     (end_time - start_time)))
             # early stopping
             if self.args.early_stop is not None:
                 if trigger >= self.args.early_stop:
                     print("=> early stopping")
                     break
-            if epoch >= self.args.warm_up:
+            if epoch >= self.args.warm_up and self.args.lr_annealing:
                 scheduler.step()
+            writer.flush()
+        writer.close()
              
     def validate_contrastive(self, model, val_loader1, val_loader2=None, val_source=False):
         model.eval()

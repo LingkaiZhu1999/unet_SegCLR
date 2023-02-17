@@ -103,8 +103,8 @@ class ImageDataset(BaseDataset):
                             (0, 0, 0): 1, # 1 = class 1, disc
                             }
         elif dataset == 'rimone':
-            self.mapping = {(255, 255, 0): 0, # 0 = background
-                            (0, 0, 0): 1, # 1 = class 1, disc
+            self.mapping = {(0, 0, 0): 0, # 0 = background
+                            (255, 255, 255): 1, # 1 = class 1, disc
                             }
         else:
             raise ValueError('Dataset not specified by the dataloader file, please add the dataset.')
@@ -132,7 +132,7 @@ class ImageDataset(BaseDataset):
 
         image = np.array(Image.open(os.path.join(self.image_path, image_name)))
         # annotation = Image.open(os.path.join(self.anno_path, image_name))
-        mask = np.array(Image.open(os.path.join(self.mask_path, label_name)))
+        mask = np.array(Image.open(os.path.join(self.mask_path, label_name)).convert('RGB'))
 
         if self.pair_gen:
             if not self.val_source:

@@ -78,7 +78,6 @@ def train(args, train_loader, model, criterion, optimizer, epoch, scheduler=None
     diceMetric = Dice(n_class=1).cpu()
     model.train()
     for i, (input, target) in tqdm(enumerate(train_loader), total=len(train_loader)):
-        print(input.shape, target.shape)
         if args.use_cuda:
             input = input.to(device)
             target = target.to(device)
@@ -107,10 +106,10 @@ def validate(args, val_loader, model):
         for i, (input, target) in tqdm(enumerate(val_loader), total=len(val_loader)):
             if args.use_cuda:
                 input = input.to(device)
-                target = target.to(device)
+                # target = target.to(device)
             with torch.no_grad():
                 output = model(input)
-            diceMetric.update(output, target, torch.tensor(0), torch.tensor(0))
+            diceMetric.update(output.cpu(), target.cpu(), torch.tensor(0), torch.tensor(0))
     
     dice_avg, _, _ = diceMetric.compute()
     dice_avg = torch.mean(dice_avg)
@@ -143,7 +142,7 @@ def main():
 
     cudnn.benchmark = True
     # Data loading code
-    if args.dataset == 'idrid':
+    if args.dataset != 'refuge':
         train_transform = A.Compose([
         A.Resize(576, 576, always_apply=True, interpolation=cv2.INTER_AREA)],
         )
