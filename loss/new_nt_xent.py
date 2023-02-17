@@ -68,13 +68,8 @@ class NTXentLoss(torch.nn.Module):
         # each denominator contains 2N+1-2 = 2N-1 terms, corresponding to all similarities between the sample and other samples.
         labels = torch.zeros(2 * self.batch_size).to(self.device).long() 
         loss = self.criterion(logits, labels)
-
+        # print(torch.sum(torch.exp(logits[1:16, :]), dim=0, keepdim=True).shape)
+        # test_value = torch.sum(- logits[0, :] + torch.log(torch.sum(torch.exp(logits), dim=0, keepdim=True)), dim=1)
+        test_value = torch.sum(-torch.log(torch.exp(logits[:, 0]) / torch.sum(torch.exp(logits), dim=1)))
         
-        
-        # weight_pos = 5
         return loss / (2 * self.batch_size) # Don't know why it is divided by 2N, the CELoss can set directly to reduction='mean'
-        # positives = torch.exp(positives / self.temperature)
-
-        # negatives = torch.mean(torch.exp(negatives / self.temperature), dim=1, keepdim=True)
-        # loss = torch.mean(-torch.log(positives / negatives))
-        # return loss

@@ -10,7 +10,7 @@ class BCEDiceLoss(nn.Module):
     def __init__(self):
         super(BCEDiceLoss, self).__init__()
         self.dice = DiceLoss(sigmoid=True, batch=True)
-        self.ce = nn.BCEWithLogitsLoss()
+        self.ce = nn.BCEWithLogitsLoss() # This loss combines a Sigmoid layer and the BCELoss in one single class. 
 
     def _loss(self, p, y):
         return self.dice(p, y) + self.ce(p, y.float())
