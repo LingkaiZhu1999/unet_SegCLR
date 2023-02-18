@@ -27,7 +27,7 @@ def draw_training(epoch, loss_sup, loss_con, dice_train, loss_val, fig_name, lam
     ax2.legend()
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.savefig(f"./models/{fig_name}/{fig_name}")
+    plt.savefig(f".../models/{fig_name}/{fig_name}")
     plt.close()
 
 def draw_training_joint_on_source(epoch, loss_sup, loss_con, dice_train, dice_val, con_val, fig_name, lam):
@@ -53,7 +53,7 @@ def draw_training_joint_on_source(epoch, loss_sup, loss_con, dice_train, dice_va
     ax2.legend()
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.savefig(f"./models/{fig_name}/{fig_name}")
+    plt.savefig(f"../models/{fig_name}/{fig_name}")
     plt.close()
 
 def draw_training_supervise(epoch, loss_sup, dice_train, dice_val, fig_name):
@@ -75,7 +75,7 @@ def draw_training_supervise(epoch, loss_sup, dice_train, dice_val, fig_name):
     ax2.legend()
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.savefig(f"./models/{fig_name}/{fig_name}")
+    plt.savefig(f"../models/{fig_name}/{fig_name}")
     plt.close()
 
 def draw_training_loss(epoch, loss):
@@ -90,5 +90,5 @@ def draw_training_loss(epoch, loss):
     ax1.legend()
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
-    plt.savefig("./models/train_curve_contrastive.png")
+    plt.savefig("../models/train_curve_contrastive.png")
     plt.close()
