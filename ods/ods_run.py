@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument('--mode', default='aug')
     parser.add_argument('--contrastive_mode', default='within_domain') # con mode
     args = parser.parse_args()
-    args.name = f'Eye_{args.domain_source}_adapt_{args.domain_target}_lambda_{args.lam}_batchsize_{args.batch_size}_{args.contrastive_mode}_{args.mode}_Cch_seed_{args.seed}'
+    args.name = f'Eye_{args.domain_source}_adapt_{args.domain_target}_lambda_{args.lam}_batchsize_{args.batch_size}_{args.contrastive_mode}_CL_{args.CL_type}_{args.mode}_Cch_seed_{args.seed}'
     return args
 
 def main():
