@@ -71,13 +71,14 @@ class NTXentLoss(torch.nn.Module):
             labels = torch.zeros(2 * self.batch_size).to(self.device).long() 
             loss = self.criterion(logits, labels)
         elif self.con_type == 'proposed_1':
-            loss = torch.sum(-torch.log(torch.exp(logits[:, 0]) - torch.sum(torch.exp(logits), dim=1)))
+            loss = torch.sum(-torch.log(torch.exp(logits[:, 0]) / torch.sum(torch.exp(logits), dim=1)))
+            # not gonna work
         elif self.con_type == 'proposed_2':
-            loss = -(logits[:, 0] - torch.sum(logits, dim=1))
+            loss = torch.sum(-(logits[:, 0] - torch.sum(logits, dim=1)))
         elif self.con_type == 'proposed_3':
-            loss = -torch.log(torch.exp(logits[:, 0]))
-
+            loss = torch.sum(-torch.log(torch.exp(logits[:, 0])))
         return loss / (2 * self.batch_size) # Don't know why it is divided by 2N, the CELoss can set directly to reduction='mean'
+
         # positives = torch.exp(positives / self.temperature)
 
         # negatives = torch.mean(torch.exp(negatives / self.temperature), dim=1, keepdim=True)
