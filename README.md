@@ -1,6 +1,8 @@
 # unet_SegCLR
-The code for the paper Unsupervised Domain Adaptation with Contrastive Learning for OCT Segmentation https://arxiv.org/abs/2203.03664.
-It is applied on the BraTS 21 Dataset and the Retinal Datasets (refuge, idrid, rimone).
+The code is an extension of Unsupervised Domain Adaptation with Contrastive Learning for OCT Segmentation (https://link.springer.com/chapter/10.1007/978-3-031-16452-1_34) 
+to the BraTS 21 Dataset and the Retinal Datasets (refuge, idrid, rimone).
+![alt text](https://github.com/LingkaiZhu1999/unet_SegCLR/blob/main/illustration.PNG?raw=true)
+
 | D0->D1 CL          |                         | Dt    | Ds    |       |       | D0  | refuge  |
 |--------------------|-------------------------|-------|-------|-------|-------|-----|---------|
 | supervised         | UpperBound[Dt] (idrid)  | 90.09 | 30.30 |       |       | D1  | idrid   |
