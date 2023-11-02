@@ -1,4 +1,4 @@
-# unet_SegCLR
+# Domain Adaptation of medical image datasets 
 The code is an extension of Unsupervised Domain Adaptation with Contrastive Learning for OCT Segmentation (https://link.springer.com/chapter/10.1007/978-3-031-16452-1_34) 
 to the BraTS 21 Dataset and the Retinal Datasets (refuge, idrid, rimone).
 ![alt text](https://github.com/LingkaiZhu1999/unet_SegCLR/blob/main/illustration.PNG?raw=true)
